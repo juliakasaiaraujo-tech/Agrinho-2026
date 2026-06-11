@@ -255,7 +255,7 @@
         </div>
     </section>
 
-    <!-- SUSTENTABILIDADE com VÍDEO CORRIGIDO (Vídeo ativo da Embrapa) -->
+    <!-- SUSTENTABILIDADE com VÍDEO CORRIGIDO (Link da Embrapa: Roça Sustentável) -->
     <section id="sustentabilidade" class="section-bg-bege">
         <div class="container">
             <h2 class="section-title">Sustentabilidade no Agronegócio</h2>
@@ -267,19 +267,20 @@
                 <div class="card"><i class="fas fa-solar-panel"></i><h3>Energia Renovável</h3><p>Painéis solares, biodigestores e biogás nas propriedades.</p></div>
                 <div class="card"><i class="fas fa-seedling"></i><h3>Conservação do Solo</h3><p>Plantio direto, rotação de culturas e cobertura vegetal permanente.</p></div>
             </div>
-           <div class="video-container">
-    <iframe 
-        src="https://www.youtube-nocookie.com/embed/5BprN0K2j6s?rel=0&modestbranding=1&autoplay=0" 
-        title="Sustentabilidade no Agronegócio - Vídeo Embrapa" 
-        frameborder="0" 
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-        allowfullscreen>
-    </iframe>
-    <div class="video-fallback-link">
-        <i class="fas fa-external-link-alt"></i> 
-        <a href="https://www.youtube.com/watch?v=5BprN0K2j6s" target="_blank">Clique aqui se o vídeo não carregar (assistir no YouTube)</a>
-    </div>
-</div>
+            <!-- VÍDEO ATUALIZADO: "Roça Sustentável: Revolucione sua Agricultura Familiar com a Embrapa!" -->
+            <div class="video-container">
+                <iframe 
+                    src="https://www.youtube-nocookie.com/embed/FjS6b31O0Qs?rel=0&modestbranding=1&autoplay=0" 
+                    title="Roça Sustentável: Revolucione sua Agricultura Familiar com a Embrapa!" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+                </iframe>
+                <div class="video-fallback-link">
+                    <i class="fas fa-external-link-alt"></i> 
+                    <a href="https://youtu.be/FjS6b31O0Qs" target="_blank">📺 Clique aqui se o vídeo não carregar (assistir no YouTube)</a>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -434,13 +435,13 @@
             let fert = parseFloat(document.getElementById('fertilizanteCalc').value) || 0;
             let comb = parseFloat(document.getElementById('combustivelCalc').value) || 0;
             let total = (fert * 3.5) + (comb * 0.00268) + (area * 0.5);
-            document.getElementById('resultadoImpacto').innerHTML = `🌍 Emissão: ${total.toFixed(2)} tCO₂e/ano`;
+            document.getElementById('resultadoImpacto').innerHTML = `🌍 Emissão estimada: ${total.toFixed(2)} tCO₂e/ano`;
         };
 
         // Formulário
         document.getElementById('contactForm').onsubmit = (e) => {
             e.preventDefault();
-            document.getElementById('formFeedback').innerHTML = '✓ Mensagem enviada com sucesso!';
+            document.getElementById('formFeedback').innerHTML = '✓ Mensagem enviada com sucesso! Obrigado por contribuir com o futuro sustentável.';
             e.target.reset();
         };
     </script>

@@ -13,7 +13,6 @@
     <link rel="stylesheet" href="style.css">
     <style>
         /* Estilos mínimos de fallback - o estilo principal está no style.css */
-        /* Garantia de que o vídeo não quebre layout */
         .video-container {
             position: relative;
             padding-bottom: 56.25%;
@@ -44,6 +43,167 @@
         }
         .video-fallback-link a:hover {
             text-decoration: underline;
+        }
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 1.8rem;
+            box-shadow: 0 12px 24px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+            border: 1px solid #E8E3D8;
+        }
+        .card:hover { transform: translateY(-5px); }
+        .card i { font-size: 2.5rem; color: #2E7D5C; margin-bottom: 1rem; }
+        .btn {
+            display: inline-block;
+            background-color: #2E7D5C;
+            color: white;
+            padding: 12px 28px;
+            border-radius: 40px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .section-bg-light { background-color: #FFFFFF; }
+        .section-bg-bege { background-color: #F5F0E8; }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+        .navbar {
+            background-color: #0A3D2B;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .logo {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+        .logo span {
+            background: rgba(255,255,255,0.15);
+            padding: 0 8px;
+            border-radius: 30px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-links a:hover { color: #c5e0d4; }
+        .menu-toggle {
+            display: none;
+            font-size: 1.8rem;
+            color: white;
+            cursor: pointer;
+        }
+        .hero {
+            background: linear-gradient(135deg, rgba(10,61,43,0.85), rgba(26,74,122,0.7)), url('https://picsum.photos/id/104/1600/700') center/cover no-repeat;
+            color: white;
+            padding: 5rem 0;
+            text-align: center;
+        }
+        .hero h1 { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; }
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #0A3D2B;
+        }
+        .section-title:after {
+            content: '';
+            display: block;
+            width: 70px;
+            height: 4px;
+            background: #2E7D5C;
+            margin-top: 8px;
+        }
+        .stats-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        .stat-item {
+            background: #F5F0E8;
+            padding: 1.5rem;
+            border-radius: 32px;
+            flex: 1;
+            text-align: center;
+            border-left: 5px solid #2E7D5C;
+        }
+        .stat-number { font-size: 2.3rem; font-weight: 800; color: #1A4A7A; }
+        .chart-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            background: white;
+            padding: 1rem;
+            border-radius: 32px;
+        }
+        .diferenciais-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+        .quiz-option {
+            display: block;
+            margin: 0.5rem 0;
+            padding: 10px 14px;
+            background: #f0ede7;
+            border-radius: 40px;
+            cursor: pointer;
+        }
+        .calc-input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 40px;
+            border: 1px solid #ccc;
+        }
+        .partner-logos {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .partner {
+            background: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 60px;
+            font-weight: 600;
+        }
+        footer {
+            background-color: #0A3D2B;
+            color: #d9e0db;
+            padding: 2rem 0;
+            text-align: center;
+        }
+        @media (max-width: 780px) {
+            .menu-toggle { display: block; }
+            .nav-links {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                text-align: center;
+            }
+            .nav-links.active { display: flex; }
+            .hero h1 { font-size: 2rem; }
+            .section-title { font-size: 1.8rem; }
         }
     </style>
 </head>
@@ -81,21 +241,21 @@
             <div class="stats-grid">
                 <div class="stat-item"><div class="stat-number">24-25%</div><p>do PIB brasileiro</p></div>
                 <div class="stat-item"><div class="stat-number">48%</div><p>das exportações totais</p></div>
-                <div class="stat-item"><div class="stat-number">+400%</div><p>crescimento de grãos desde 1990*<br><small>área plantada +40%</small></p></div>
+                <div class="stat-item"><div class="stat-number">+400%</div><p>crescimento de grãos desde 1990</p></div>
             </div>
             <div class="grid-cards">
-                <div class="card"><i class="fas fa-chart-line"></i><h3>Valor da Produção</h3><p>R$ 1,3 trilhão (agropecuária), geração de milhões de empregos diretos e indiretos.</p></div>
+                <div class="card"><i class="fas fa-chart-line"></i><h3>Valor da Produção</h3><p>R$ 1,3 trilhão (agropecuária), geração de milhões de empregos.</p></div>
                 <div class="card"><i class="fas fa-tractor"></i><h3>Principais Produtos</h3><p>Soja, milho, café, açúcar, carnes, algodão – Brasil líder mundial.</p></div>
                 <div class="card"><i class="fas fa-microchip"></i><h3>Tecnologias Utilizadas</h3><p>Agricultura de precisão, drones, sensores IoT, biotecnologia.</p></div>
             </div>
             <div class="chart-container">
                 <canvas id="prodChart" width="400" height="250"></canvas>
-                <p style="text-align:center; font-size:0.8rem;">Evolução da produção de grãos (milhões de toneladas) vs área plantada (milhões ha) - Dados ilustrativos</p>
+                <p style="text-align:center; font-size:0.8rem;">Evolução da produção de grãos vs área plantada - Dados ilustrativos</p>
             </div>
         </div>
     </section>
 
-    <!-- SUSTENTABILIDADE com VÍDEO CORRIGIDO -->
+    <!-- SUSTENTABILIDADE com VÍDEO CORRIGIDO (Vídeo ativo da Embrapa) -->
     <section id="sustentabilidade" class="section-bg-bege">
         <div class="container">
             <h2 class="section-title">Sustentabilidade no Agronegócio</h2>
@@ -107,18 +267,18 @@
                 <div class="card"><i class="fas fa-solar-panel"></i><h3>Energia Renovável</h3><p>Painéis solares, biodigestores e biogás nas propriedades.</p></div>
                 <div class="card"><i class="fas fa-seedling"></i><h3>Conservação do Solo</h3><p>Plantio direto, rotação de culturas e cobertura vegetal permanente.</p></div>
             </div>
-            <!-- VÍDEO CORRIGIDO: usando youtube-nocookie.com para evitar erro de conexão -->
+            <!-- VÍDEO CORRIGIDO - Vídeo da Embrapa sobre Sustentabilidade no Agro (ativo e com embed liberado) -->
             <div class="video-container">
                 <iframe 
-                    src="https://www.youtube-nocookie.com/embed/7vKQbSjfL1M?rel=0&modestbranding=1&autoplay=0" 
-                    title="Sustentabilidade no Agronegócio - Vídeo Institucional" 
+                    src="https://www.youtube-nocookie.com/embed/5BprN0K2j6s?rel=0&modestbranding=1&autoplay=0" 
+                    title="Sustentabilidade no Agronegócio - Vídeo Embrapa" 
                     frameborder="0" 
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                     allowfullscreen>
                 </iframe>
                 <div class="video-fallback-link">
                     <i class="fas fa-external-link-alt"></i> 
-                    <a href="https://www.youtube.com/watch?v=7vKQbSjfL1M" target="_blank">Clique aqui se o vídeo não carregar (assistir no YouTube)</a>
+                    <a href="https://www.youtube.com/watch?v=5BprN0K2j6s" target="_blank">📺 Clique aqui se o vídeo não carregar (assistir no YouTube)</a>
                 </div>
             </div>
         </div>
@@ -149,11 +309,6 @@
                 <div class="card"><i class="fas fa-satellite"></i><h3>Tecnologias Digitais</h3><p>Drones, sensores IoT, plataformas de análise de dados.</p></div>
                 <div class="card"><i class="fas fa-certificate"></i><h3>Certificações</h3><p>Rastreabilidade e origem sustentável para mercados internacionais.</p></div>
             </div>
-            <div class="solutions-highlight">
-                <i class="fas fa-seedling"></i>
-                <h3>Visão de futuro</h3>
-                <p>É possível conciliar crescimento econômico com preservação ambiental via intensificação sustentável e inovação.</p>
-            </div>
         </div>
     </section>
 
@@ -163,51 +318,32 @@
             <h2 class="section-title">Desafio Interativo</h2>
             <p class="section-sub">Teste seus conhecimentos e calcule seu impacto ambiental no campo.</p>
             <div class="diferenciais-grid">
-                <!-- QUIZ -->
-                <div class="diferencial-card">
-                    <i class="fas fa-question-circle" style="font-size:2rem; color:var(--verde-institucional);"></i>
+                <div class="card">
+                    <i class="fas fa-question-circle"></i>
                     <h3>🌱 Quiz da Sustentabilidade</h3>
-                    <div id="quizContainer">
-                        <div class="quiz-question">1. Qual técnica reduz a erosão e melhora a saúde do solo?</div>
-                        <div class="quiz-option" data-correct="true">Plantio direto</div>
-                        <div class="quiz-option" data-correct="false">Queimada controlada</div>
-                        <div class="quiz-option" data-correct="false">Monocultura extensiva</div>
-                        <div class="quiz-question" style="margin-top:15px;">2. Qual fonte de energia renovável tem crescido no campo?</div>
-                        <div class="quiz-option" data-correct="true">Energia solar e biogás</div>
-                        <div class="quiz-option" data-correct="false">Carvão mineral</div>
-                        <div class="quiz-option" data-correct="false">Diesel comum</div>
-                        <div class="quiz-question" style="margin-top:15px;">3. A ILPF (integração lavoura-pecuária-floresta) ajuda a:</div>
-                        <div class="quiz-option" data-correct="true">Aumentar a biodiversidade e sequestrar carbono</div>
-                        <div class="quiz-option" data-correct="false">Reduzir produtividade</div>
-                        <div class="quiz-option" data-correct="false">Desmatar mais áreas</div>
-                        <button id="checkQuizBtn" class="btn" style="margin-top:15px;">Verificar respostas</button>
-                        <div id="quizFeedback" class="quiz-feedback"></div>
-                    </div>
+                    <div class="quiz-question">1. Qual técnica reduz a erosão do solo?</div>
+                    <div class="quiz-option" data-correct="true">Plantio direto</div>
+                    <div class="quiz-option" data-correct="false">Queimada</div>
+                    <div class="quiz-question">2. Energia renovável no campo:</div>
+                    <div class="quiz-option" data-correct="true">Energia solar</div>
+                    <div class="quiz-option" data-correct="false">Carvão mineral</div>
+                    <div class="quiz-question">3. ILPF significa:</div>
+                    <div class="quiz-option" data-correct="true">Integração Lavoura-Pecuária-Floresta</div>
+                    <div class="quiz-option" data-correct="false">Irrigação de baixa pressão</div>
+                    <button id="checkQuizBtn" class="btn">Verificar respostas</button>
+                    <div id="quizFeedback" class="quiz-feedback" style="margin-top:1rem;"></div>
                 </div>
-                <!-- CALCULADORA -->
-                <div class="diferencial-card">
-                    <i class="fas fa-calculator" style="font-size:2rem; color:var(--verde-institucional);"></i>
-                    <h3>📊 Calculadora de Impacto Ambiental</h3>
-                    <p>Estime as emissões de CO₂ da sua produção agrícola (toneladas/ano)</p>
-                    <label>Área cultivada (hectares):</label>
-                    <input type="number" id="areaCalc" class="calc-input" placeholder="Ex: 100" value="100">
-                    <label>Uso de fertilizantes nitrogenados (ton/ano):</label>
-                    <input type="number" id="fertilizanteCalc" class="calc-input" placeholder="Ex: 10" value="10">
+                <div class="card">
+                    <i class="fas fa-calculator"></i>
+                    <h3>📊 Calculadora de Impacto</h3>
+                    <label>Área (hectares):</label>
+                    <input type="number" id="areaCalc" class="calc-input" value="100">
+                    <label>Fertilizantes (ton/ano):</label>
+                    <input type="number" id="fertilizanteCalc" class="calc-input" value="10">
                     <label>Combustível (litros/ano):</label>
-                    <input type="number" id="combustivelCalc" class="calc-input" placeholder="Ex: 5000" value="5000">
+                    <input type="number" id="combustivelCalc" class="calc-input" value="5000">
                     <button id="calcImpactBtn" class="btn">Calcular Emissões</button>
                     <p id="resultadoImpacto" style="margin-top:1rem; font-weight:bold;">Resultado: -- tCO₂e/ano</p>
-                    <small>* Estimativa baseada em fatores médios (IPCC). Reduza com práticas sustentáveis!</small>
-                </div>
-            </div>
-            <!-- GALERIA -->
-            <div style="margin-top:3rem;">
-                <h3>📸 Galeria Interativa - Tecnologia & Natureza</h3>
-                <div class="grid-cards" style="grid-template-columns: repeat(auto-fit, minmax(150px,1fr));">
-                    <div class="card" style="text-align:center;"><img src="https://picsum.photos/id/15/150/100" style="width:100%; border-radius:16px;" alt="Plantio"><p>Lavouras tecnificadas</p></div>
-                    <div class="card" style="text-align:center;"><img src="https://picsum.photos/id/0/150/100" style="width:100%; border-radius:16px;" alt="Drone"><p>Drone em ação</p></div>
-                    <div class="card" style="text-align:center;"><img src="https://picsum.photos/id/29/150/100" style="width:100%; border-radius:16px;" alt="Solar"><p>Energia solar no campo</p></div>
-                    <div class="card" style="text-align:center;"><img src="https://picsum.photos/id/104/150/100" style="width:100%; border-radius:16px;" alt="Solo fértil"><p>Solo fértil</p></div>
                 </div>
             </div>
         </div>
@@ -217,26 +353,24 @@
     <section id="contato" class="section-bg-bege">
         <div class="container">
             <h2 class="section-title">Fale Conosco</h2>
-            <p class="section-sub">Envie sua mensagem, dúvida ou sugestão. Vamos construir juntos um futuro sustentável.</p>
+            <p class="section-sub">Envie sua mensagem, dúvida ou sugestão.</p>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
                 <div>
                     <form id="contactForm">
-                        <div class="form-group"><input type="text" id="nome" placeholder="Seu nome" required></div>
-                        <div class="form-group"><input type="email" id="email" placeholder="Seu e-mail" required></div>
-                        <div class="form-group"><textarea rows="4" placeholder="Sua mensagem..." id="mensagem" required></textarea></div>
-                        <button type="submit" class="btn"><i class="fas fa-paper-plane"></i> Enviar mensagem</button>
-                        <p id="formFeedback" style="margin-top: 12px;"></p>
+                        <input type="text" id="nome" placeholder="Seu nome" class="calc-input" style="margin-bottom:1rem;">
+                        <input type="email" id="email" placeholder="Seu e-mail" class="calc-input" style="margin-bottom:1rem;">
+                        <textarea rows="4" id="mensagem" placeholder="Sua mensagem..." class="calc-input" style="margin-bottom:1rem;"></textarea>
+                        <button type="submit" class="btn">Enviar mensagem</button>
+                        <p id="formFeedback" style="margin-top:1rem;"></p>
                     </form>
                 </div>
                 <div>
-                    <i class="fas fa-hand-holding-heart" style="font-size: 2rem; color: var(--verde-institucional);"></i>
+                    <i class="fas fa-hand-holding-heart" style="font-size: 2rem; color: #2E7D5C;"></i>
                     <h3>Construindo um Futuro Sustentável</h3>
-                    <p>O equilíbrio entre produção e preservação é oportunidade econômica e ambiental. O agronegócio brasileiro pode ser referência mundial.</p>
                     <div class="partner-logos">
                         <div class="partner">Embrapa</div>
                         <div class="partner">Ministério da Agricultura</div>
                         <div class="partner">Plano ABC+</div>
-                        <div class="partner">IICA</div>
                     </div>
                 </div>
             </div>
@@ -245,8 +379,7 @@
 
     <footer>
         <div class="container">
-            <p>© 2026 Agrinho - Agro Forte, Futuro Sustentável | Equilíbrio entre produção e meio ambiente</p>
-            <p style="margin-top: 12px; font-size: 0.85rem;">Site educativo - Dados indicativos | Desafio: quiz, calculadora de impacto, gráfico e vídeo interativo.</p>
+            <p>© 2026 Agrinho - Agro Forte, Futuro Sustentável</p>
         </div>
     </footer>
 
@@ -267,76 +400,50 @@
             data: {
                 labels: ['1990', '2000', '2010', '2020', '2025'],
                 datasets: [
-                    { label: 'Produção de grãos (milhões ton)', data: [58, 80, 149, 258, 310], borderColor: '#2E7D5C', backgroundColor: 'rgba(46,125,92,0.1)', tension: 0.3, fill: true },
-                    { label: 'Área plantada (milhões ha)', data: [38, 42, 48, 61, 66], borderColor: '#1A4A7A', backgroundColor: 'rgba(26,74,122,0.05)', tension: 0.3, fill: false }
+                    { label: 'Produção (milhões ton)', data: [58, 80, 149, 258, 310], borderColor: '#2E7D5C', tension: 0.3 },
+                    { label: 'Área plantada (milhões ha)', data: [38, 42, 48, 61, 66], borderColor: '#1A4A7A', tension: 0.3 }
                 ]
             },
-            options: { responsive: true, plugins: { legend: { position: 'top' } } }
+            options: { responsive: true }
         });
 
-        // QUIZ
-        const quizOptions = document.querySelectorAll('.quiz-option');
-        let selectedAnswers = [null, null, null];
-        const questionsGroups = [
-            document.querySelectorAll('.quiz-option:nth-child(2), .quiz-option:nth-child(3), .quiz-option:nth-child(4)'),
-            document.querySelectorAll('.quiz-option:nth-child(6), .quiz-option:nth-child(7), .quiz-option:nth-child(8)'),
-            document.querySelectorAll('.quiz-option:nth-child(10), .quiz-option:nth-child(11), .quiz-option:nth-child(12)')
+        // Quiz
+        let selected = [null, null, null];
+        const opts = document.querySelectorAll('.quiz-option');
+        const groups = [
+            [opts[0], opts[1]],
+            [opts[2], opts[3]],
+            [opts[4], opts[5]]
         ];
-        function resetQuizStyles() {
-            quizOptions.forEach(opt => opt.style.backgroundColor = '');
-        }
-        questionsGroups.forEach((group, idx) => {
+        groups.forEach((group, idx) => {
             group.forEach(opt => {
-                opt.addEventListener('click', () => {
-                    resetQuizStyles();
-                    selectedAnswers[idx] = opt.getAttribute('data-correct') === 'true';
+                opt.onclick = () => {
+                    selected[idx] = opt.dataset.correct === 'true';
+                    group.forEach(o => o.style.backgroundColor = '');
                     opt.style.backgroundColor = '#cfe8dc';
-                });
+                };
             });
         });
-        const checkBtn = document.getElementById('checkQuizBtn');
-        if(checkBtn) {
-            checkBtn.addEventListener('click', () => {
-                let correctCount = selectedAnswers.filter(a => a === true).length;
-                let feedback = `Você acertou ${correctCount} de 3. `;
-                if (correctCount === 3) feedback += 'Parabéns! Você é expert em sustentabilidade! 🌎';
-                else if (correctCount >= 2) feedback += 'Muito bem! Continue aprendendo sobre agro sustentável. 🌱';
-                else feedback += 'Que tal revisar os conteúdos? A sustentabilidade é essencial!';
-                document.getElementById('quizFeedback').innerHTML = feedback;
-            });
-        }
+        document.getElementById('checkQuizBtn').onclick = () => {
+            let correct = selected.filter(v => v === true).length;
+            document.getElementById('quizFeedback').innerHTML = `✅ Você acertou ${correct} de 3. ${correct === 3 ? 'Parabéns!' : 'Continue aprendendo!'}`;
+        };
 
-        // CALCULADORA
-        const calcBtn = document.getElementById('calcImpactBtn');
-        if(calcBtn) {
-            calcBtn.addEventListener('click', () => {
-                let area = parseFloat(document.getElementById('areaCalc').value) || 0;
-                let fert = parseFloat(document.getElementById('fertilizanteCalc').value) || 0;
-                let comb = parseFloat(document.getElementById('combustivelCalc').value) || 0;
-                let emissaoFert = fert * 3.5;
-                let emissaoComb = comb * 0.00268;
-                let emissaoArea = area * 0.5;
-                let total = emissaoFert + emissaoComb + emissaoArea;
-                document.getElementById('resultadoImpacto').innerHTML = `🌍 Emissão estimada: ${total.toFixed(2)} tCO₂e/ano. Adote práticas sustentáveis para reduzir!`;
-            });
-        }
+        // Calculadora
+        document.getElementById('calcImpactBtn').onclick = () => {
+            let area = parseFloat(document.getElementById('areaCalc').value) || 0;
+            let fert = parseFloat(document.getElementById('fertilizanteCalc').value) || 0;
+            let comb = parseFloat(document.getElementById('combustivelCalc').value) || 0;
+            let total = (fert * 3.5) + (comb * 0.00268) + (area * 0.5);
+            document.getElementById('resultadoImpacto').innerHTML = `🌍 Emissão: ${total.toFixed(2)} tCO₂e/ano`;
+        };
 
-        // FORMULÁRIO
-        const contactForm = document.getElementById('contactForm');
-        if(contactForm) {
-            contactForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const nome = document.getElementById('nome').value;
-                const email = document.getElementById('email').value;
-                const msg = document.getElementById('mensagem').value;
-                if (nome && email && msg) {
-                    document.getElementById('formFeedback').innerHTML = '<span style="color:#2E7D5C;">✓ Mensagem enviada com sucesso! Obrigado por contribuir com o futuro sustentável.</span>';
-                    this.reset();
-                } else {
-                    document.getElementById('formFeedback').innerHTML = '<span style="color:#b33;">Preencha todos os campos.</span>';
-                }
-            });
-        }
+        // Formulário
+        document.getElementById('contactForm').onsubmit = (e) => {
+            e.preventDefault();
+            document.getElementById('formFeedback').innerHTML = '✓ Mensagem enviada com sucesso!';
+            e.target.reset();
+        };
     </script>
 </body>
 </html>

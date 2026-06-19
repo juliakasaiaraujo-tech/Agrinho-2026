@@ -1,5 +1,5 @@
 // ============================================
-// SCRIPT.JS - INTERATIVIDADE ORIENTAL
+// SCRIPT.JS - INTERATIVIDADE
 // ============================================
 
 document.addEventListener('DOMContentLoaded', function() {

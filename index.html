@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --verde-escuro: #0A3D2B;
@@ -700,6 +701,252 @@
             box-shadow: 0 6px 20px rgba(46, 125, 92, 0.4);
         }
 
+        /* Quiz Section */
+        .quiz-section {
+            background: linear-gradient(135deg, var(--verde-escuro) 0%, var(--verde-escuro-2) 100%);
+            color: var(--branco);
+        }
+
+        .quiz-section .section-title {
+            color: var(--branco);
+        }
+
+        .quiz-section .section-subtitle {
+            color: rgba(255,255,255,0.9);
+        }
+
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--branco);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 2rem;
+            border-bottom: 3px solid var(--bege-claro);
+        }
+
+        .quiz-header h3 {
+            color: var(--verde-escuro);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .quiz-progress {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            transition: all 0.3s;
+        }
+
+        .progress-dot.active {
+            background: var(--verde-institucional);
+            transform: scale(1.3);
+        }
+
+        .progress-dot.completed {
+            background: var(--verde-institucional);
+        }
+
+        .quiz-question {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .quiz-question.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            color: var(--verde-escuro);
+            font-weight: 600;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: var(--verde-institucional);
+            color: var(--branco);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            margin-right: 1rem;
+            font-weight: 700;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .quiz-option {
+            background: var(--bege-claro);
+            border: 2px solid transparent;
+            padding: 1.2rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .quiz-option:hover {
+            background: #e8e0d5;
+            border-color: var(--verde-institucional);
+            transform: translateX(5px);
+        }
+
+        .quiz-option.selected {
+            background: var(--verde-institucional);
+            color: var(--branco);
+            border-color: var(--verde-institucional);
+        }
+
+        .quiz-option.correct {
+            background: #4CAF50;
+            color: var(--branco);
+            border-color: #4CAF50;
+        }
+
+        .quiz-option.incorrect {
+            background: #f44336;
+            color: var(--branco);
+            border-color: #f44336;
+        }
+
+        .option-letter {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--branco);
+            color: var(--verde-escuro);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .quiz-option.selected .option-letter,
+        .quiz-option.correct .option-letter,
+        .quiz-option.incorrect .option-letter {
+            background: rgba(255,255,255,0.2);
+            color: var(--branco);
+        }
+
+        .quiz-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2.5rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--bege-claro);
+        }
+
+        .quiz-btn {
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quiz-btn-prev {
+            background: #e0e0e0;
+            color: var(--cinza-escuro);
+        }
+
+        .quiz-btn-prev:hover {
+            background: #d0d0d0;
+        }
+
+        .quiz-btn-next, .quiz-btn-finish {
+            background: var(--verde-institucional);
+            color: var(--branco);
+        }
+
+        .quiz-btn-next:hover, .quiz-btn-finish:hover {
+            background: var(--verde-escuro);
+            transform: translateY(-2px);
+        }
+
+        .quiz-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .quiz-result {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .quiz-result.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .result-icon-large {
+            font-size: 6rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .result-title-quiz {
+            font-size: 2.5rem;
+            color: var(--verde-escuro);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .result-score {
+            font-size: 4rem;
+            font-weight: 800;
+            color: var(--verde-institucional);
+            margin-bottom: 1rem;
+        }
+
+        .result-message {
+            font-size: 1.2rem;
+            color: var(--cinza-escuro);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
         /* Gráficos */
         .charts-section {
             background: var(--bege-claro);
@@ -725,49 +972,9 @@
             text-align: center;
         }
 
-        .chart {
-            height: 300px;
+        .chart-wrapper {
             position: relative;
-        }
-
-        .bar-chart {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-around;
-            height: 100%;
-            gap: 1rem;
-            padding: 0 1rem;
-        }
-
-        .bar-item {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .bar {
-            width: 100%;
-            background: linear-gradient(to top, var(--verde-escuro), var(--verde-institucional));
-            border-radius: 8px 8px 0 0;
-            transition: height 1s ease;
-            position: relative;
-        }
-
-        .bar-value {
-            position: absolute;
-            top: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-weight: 700;
-            color: var(--verde-escuro);
-        }
-
-        .bar-label {
-            font-size: 0.9rem;
-            color: var(--cinza-escuro);
-            font-weight: 500;
+            height: 400px;
         }
 
         /* Parceiros */
@@ -972,6 +1179,10 @@
             .calculator-result {
                 order: -1;
             }
+
+            .quiz-container {
+                padding: 2rem 1.5rem;
+            }
         }
 
         @media (max-width: 640px) {
@@ -993,6 +1204,10 @@
 
             .result-value {
                 font-size: 3rem;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -1027,7 +1242,8 @@
                 <li><a href="#dados">Dados</a></li>
                 <li><a href="#tecnologias">Tecnologias</a></li>
                 <li><a href="#calculadora">Calculadora</a></li>
-                <li><a href="#video">Vídeo</a></li>
+                <li><a href="#graficos">Gráficos</a></li>
+                <li><a href="#quiz">Quiz</a></li>
                 <li><a href="#contato">Contato</a></li>
             </ul>
             <div class="mobile-menu">
@@ -1049,9 +1265,9 @@
                         <i class="fas fa-rocket"></i>
                         Explorar Tecnologias
                     </a>
-                    <a href="#calculadora" class="btn btn-secondary">
-                        <i class="fas fa-calculator"></i>
-                        Calcular Impacto
+                    <a href="#quiz" class="btn btn-secondary">
+                        <i class="fas fa-question-circle"></i>
+                        Teste seus Conhecimentos
                     </a>
                 </div>
                 <div class="hero-stats">
@@ -1303,6 +1519,221 @@
         </div>
     </section>
 
+    <!-- Gráficos -->
+    <section id="graficos" class="charts-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Estatísticas</span>
+                <h2 class="section-title">Evolução da Produção</h2>
+                <p class="section-subtitle">Dados que mostram o crescimento sustentável do agronegócio brasileiro nas últimas décadas.</p>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <h3 class="chart-title">Produção de Grãos vs Área Plantada (1990-2025)</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="productionChart"></canvas>
+                    </div>
+                    <p style="text-align: center; margin-top: 1rem; color: var(--cinza-escuro); opacity: 0.8; font-size: 0.9rem;">
+                        * Produção em milhões de toneladas | Área em milhões de hectares
+                    </p>
+                </div>
+
+                <div class="chart-container">
+                    <h3 class="chart-title">Uso de Tecnologias no Campo (%)</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="techChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quiz de Sustentabilidade -->
+    <section id="quiz" class="quiz-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag" style="background: var(--branco); color: var(--verde-escuro);">Teste seus Conhecimentos</span>
+                <h2 class="section-title">Quiz de Sustentabilidade no Agro</h2>
+                <p class="section-subtitle">Avalie seu conhecimento sobre práticas sustentáveis e tecnologias no agronegócio.</p>
+            </div>
+
+            <div class="quiz-container">
+                <div class="quiz-header">
+                    <h3><i class="fas fa-leaf" style="color: var(--verde-institucional); margin-right: 0.5rem;"></i>Quiz da Sustentabilidade</h3>
+                    <p style="color: var(--cinza-escuro); opacity: 0.8;">Responda 5 perguntas sobre sustentabilidade no agronegócio</p>
+                </div>
+
+                <div class="quiz-progress" id="quizProgress">
+                    <div class="progress-dot active"></div>
+                    <div class="progress-dot"></div>
+                    <div class="progress-dot"></div>
+                    <div class="progress-dot"></div>
+                    <div class="progress-dot"></div>
+                </div>
+
+                <div id="quizQuestions">
+                    <!-- Questão 1 -->
+                    <div class="quiz-question active" data-question="1">
+                        <div class="question-text">
+                            <span class="question-number">1</span>
+                            Qual técnica de manejo do solo ajuda a reduzir a erosão e aumenta a matéria orgânica?
+                        </div>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a" data-correct="true">
+                                <span class="option-letter">A</span>
+                                <span>Plantio Direto</span>
+                            </div>
+                            <div class="quiz-option" data-value="b" data-correct="false">
+                                <span class="option-letter">B</span>
+                                <span>Queimada controlada</span>
+                            </div>
+                            <div class="quiz-option" data-value="c" data-correct="false">
+                                <span class="option-letter">C</span>
+                                <span>Arção intensiva</span>
+                            </div>
+                            <div class="quiz-option" data-value="d" data-correct="false">
+                                <span class="option-letter">D</span>
+                                <span>Monocultura contínua</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Questão 2 -->
+                    <div class="quiz-question" data-question="2">
+                        <div class="question-text">
+                            <span class="question-number">2</span>
+                            O que significa a sigla ILPF?
+                        </div>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a" data-correct="false">
+                                <span class="option-letter">A</span>
+                                <span>Irrigação Localizada de Precisão Fluvial</span>
+                            </div>
+                            <div class="quiz-option" data-value="b" data-correct="true">
+                                <span class="option-letter">B</span>
+                                <span>Integração Lavoura-Pecuária-Floresta</span>
+                            </div>
+                            <div class="quiz-option" data-value="c" data-correct="false">
+                                <span class="option-letter">C</span>
+                                <span>Indicador de Lucratividade da Produção Familiar</span>
+                            </div>
+                            <div class="quiz-option" data-value="d" data-correct="false">
+                                <span class="option-letter">D</span>
+                                <span>Insumos Líquidos para Produção Florestal</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Questão 3 -->
+                    <div class="quiz-question" data-question="3">
+                        <div class="question-text">
+                            <span class="question-number">3</span>
+                            Qual é a principal vantagem do uso de drones na agricultura?
+                        </div>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a" data-correct="false">
+                                <span class="option-letter">A</span>
+                                <span>Substituir totalmente o trabalho humano</span>
+                            </div>
+                            <div class="quiz-option" data-value="b" data-correct="false">
+                                <span class="option-letter">B</span>
+                                <span>Aumentar o uso de agrotóxicos</span>
+                            </div>
+                            <div class="quiz-option" data-value="c" data-correct="true">
+                                <span class="option-letter">C</span>
+                                <span>Monitoramento preciso e aplicação localizada de insumos</span>
+                            </div>
+                            <div class="quiz-option" data-value="d" data-correct="false">
+                                <span class="option-letter">D</span>
+                                <span>Reduzir a qualidade da produção</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Questão 4 -->
+                    <div class="quiz-question" data-question="4">
+                        <div class="question-text">
+                            <span class="question-number">4</span>
+                            Qual fonte de energia renovável é mais comum em propriedades rurais brasileiras?
+                        </div>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a" data-correct="false">
+                                <span class="option-letter">A</span>
+                                <span>Energia eólica</span>
+                            </div>
+                            <div class="quiz-option" data-value="b" data-correct="true">
+                                <span class="option-letter">B</span>
+                                <span>Energia solar fotovoltaica e biomassa</span>
+                            </div>
+                            <div class="quiz-option" data-value="c" data-correct="false">
+                                <span class="option-letter">C</span>
+                                <span>Energia nuclear</span>
+                            </div>
+                            <div class="quiz-option" data-value="d" data-correct="false">
+                                <span class="option-letter">D</span>
+                                <span>Energia das marés</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Questão 5 -->
+                    <div class="quiz-question" data-question="5">
+                        <div class="question-text">
+                            <span class="question-number">5</span>
+                            O que é agricultura de precisão?
+                        </div>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a" data-correct="false">
+                                <span class="option-letter">A</span>
+                                <span>Cultivo apenas de produtos orgânicos</span>
+                            </div>
+                            <div class="quiz-option" data-value="b" data-correct="true">
+                                <span class="option-letter">B</span>
+                                <span>Uso de tecnologia para otimizar insumos e aumentar eficiência</span>
+                            </div>
+                            <div class="quiz-option" data-value="c" data-correct="false">
+                                <span class="option-letter">C</span>
+                                <span>Plantio manual de sementes selecionadas</span>
+                            </div>
+                            <div class="quiz-option" data-value="d" data-correct="false">
+                                <span class="option-letter">D</span>
+                                <span>Cultivo em pequenas áreas urbanas</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-navigation">
+                    <button class="quiz-btn quiz-btn-prev" id="prevBtn" onclick="prevQuestion()" disabled>
+                        <i class="fas fa-arrow-left"></i> Anterior
+                    </button>
+                    <button class="quiz-btn quiz-btn-next" id="nextBtn" onclick="nextQuestion()" disabled>
+                        Próxima <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="quiz-btn quiz-btn-finish" id="finishBtn" onclick="finishQuiz()" style="display: none;">
+                        Ver Resultado <i class="fas fa-trophy"></i>
+                    </button>
+                </div>
+
+                <div class="quiz-result" id="quizResult">
+                    <div class="result-icon-large" id="resultIcon">🏆</div>
+                    <div class="result-title-quiz" id="resultTitle">Parabéns!</div>
+                    <div class="result-score" id="resultScore">0/5</div>
+                    <div class="result-message" id="resultMessage"></div>
+                    <div class="result-actions">
+                        <button class="btn btn-primary" onclick="restartQuiz()">
+                            <i class="fas fa-redo"></i> Refazer Quiz
+                        </button>
+                        <a href="#tecnologias" class="btn btn-secondary">
+                            <i class="fas fa-book"></i> Aprender Mais
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Seção de Vídeo -->
     <section class="video-section" id="video">
         <div class="container">
@@ -1529,113 +1960,6 @@
         </div>
     </section>
 
-    <!-- Gráficos -->
-    <section class="charts-section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Estatísticas</span>
-                <h2 class="section-title">Evolução da Produção</h2>
-                <p class="section-subtitle">Dados que mostram o crescimento sustentável do agronegócio brasileiro nas últimas décadas.</p>
-            </div>
-
-            <div class="charts-grid">
-                <div class="chart-container">
-                    <h3 class="chart-title">Produção de Grãos vs Área Plantada (1990-2025)</h3>
-                    <div class="chart">
-                        <div class="bar-chart">
-                            <div class="bar-item">
-                                <div class="bar" style="height: 40%" data-height="40">
-                                    <span class="bar-value">60M</span>
-                                </div>
-                                <span class="bar-label">1990</span>
-                            </div>
-                            <div class="bar-item">
-                                <div class="bar" style="height: 55%" data-height="55">
-                                    <span class="bar-value">90M</span>
-                                </div>
-                                <span class="bar-label">2000</span>
-                            </div>
-                            <div class="bar-item">
-                                <div class="bar" style="height: 75%" data-height="75">
-                                    <span class="bar-value">150M</span>
-                                </div>
-                                <span class="bar-label">2010</span>
-                            </div>
-                            <div class="bar-item">
-                                <div class="bar" style="height: 95%" data-height="95">
-                                    <span class="bar-value">250M</span>
-                                </div>
-                                <span class="bar-label">2020</span>
-                            </div>
-                            <div class="bar-item">
-                                <div class="bar" style="height: 100%" data-height="100">
-                                    <span class="bar-value">300M</span>
-                                </div>
-                                <span class="bar-label">2025</span>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="text-align: center; margin-top: 1rem; color: var(--cinza-escuro); opacity: 0.8; font-size: 0.9rem;">
-                        * Produção em milhões de toneladas
-                    </p>
-                </div>
-
-                <div class="chart-container">
-                    <h3 class="chart-title">Uso de Tecnologias no Campo (%)</h3>
-                    <div class="chart">
-                        <div style="display: flex; flex-direction: column; gap: 1.5rem; height: 100%; justify-content: center;">
-                            <div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                                    <span style="font-weight: 600; color: var(--verde-escuro);">Agricultura de Precisão</span>
-                                    <span style="font-weight: 700; color: var(--verde-institucional);">68%</span>
-                                </div>
-                                <div style="background: #e0e0e0; height: 25px; border-radius: 12px; overflow: hidden;">
-                                    <div style="width: 68%; height: 100%; background: linear-gradient(90deg, var(--verde-escuro), var(--verde-institucional)); border-radius: 12px; transition: width 1s;"></div>
-                                </div>
-                            </div>
-                            <div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                                    <span style="font-weight: 600; color: var(--verde-escuro);">Drones/Sensoriamento</span>
-                                    <span style="font-weight: 700; color: var(--verde-institucional);">45%</span>
-                                </div>
-                                <div style="background: #e0e0e0; height: 25px; border-radius: 12px; overflow: hidden;">
-                                    <div style="width: 45%; height: 100%; background: linear-gradient(90deg, var(--verde-escuro), var(--verde-institucional)); border-radius: 12px; transition: width 1s;"></div>
-                                </div>
-                            </div>
-                            <div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                                    <span style="font-weight: 600; color: var(--verde-escuro);">Energia Renovável</span>
-                                    <span style="font-weight: 700; color: var(--verde-institucional);">32%</span>
-                                </div>
-                                <div style="background: #e0e0e0; height: 25px; border-radius: 12px; overflow: hidden;">
-                                    <div style="width: 32%; height: 100%; background: linear-gradient(90deg, var(--verde-escuro), var(--verde-institucional)); border-radius: 12px; transition: width 1s;"></div>
-                                </div>
-                            </div>
-                            <div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                                    <span style="font-weight: 600; color: var(--verde-escuro);">Plantio Direto</span>
-                                    <span style="font-weight: 700; color: var(--verde-institucional);">85%</span>
-                                </div>
-                                <div style="background: #e0e0e0; height: 25px; border-radius: 12px; overflow: hidden;">
-                                    <div style="width: 85%; height: 100%; background: linear-gradient(90deg, var(--verde-escuro), var(--verde-institucional)); border-radius: 12px; transition: width 1s;"></div>
-                                </div>
-                            </div>
-                            <div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                                    <span style="font-weight: 600; color: var(--verde-escuro);">ILPF</span>
-                                    <span style="font-weight: 700; color: var(--verde-institucional);">28%</span>
-                                </div>
-                                <div style="background: #e0e0e0; height: 25px; border-radius: 12px; overflow: hidden;">
-                                    <div style="width: 28%; height: 100%; background: linear-gradient(90deg, var(--verde-escuro), var(--verde-institucional)); border-radius: 12px; transition: width 1s;"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Parceiros -->
     <section class="partners-section">
         <div class="container">
@@ -1772,6 +2096,7 @@
                     <li><a href="#dados">Dados e Estatísticas</a></li>
                     <li><a href="#tecnologias">Tecnologias</a></li>
                     <li><a href="#calculadora">Calculadora</a></li>
+                    <li><a href="#quiz">Quiz</a></li>
                     <li><a href="#contato">Contato</a></li>
                 </ul>
             </div>
@@ -1802,6 +2127,178 @@
     </footer>
 
     <script>
+        // Variáveis do Quiz
+        let currentQuestion = 1;
+        const totalQuestions = 5;
+        let answers = {};
+        let score = 0;
+
+        // Inicializar Gráficos
+        document.addEventListener('DOMContentLoaded', function() {
+            initCharts();
+        });
+
+        function initCharts() {
+            // Gráfico de Produção vs Área
+            const prodCtx = document.getElementById('productionChart').getContext('2d');
+            new Chart(prodCtx, {
+                type: 'line',
+                data: {
+                    labels: ['1990', '1995', '2000', '2005', '2010', '2015', '2020', '2025'],
+                    datasets: [{
+                        label: 'Produção (milhões ton)',
+                        data: [60, 72, 90, 115, 150, 200, 250, 300],
+                        borderColor: '#2E7D5C',
+                        backgroundColor: 'rgba(46, 125, 92, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 6,
+                        pointBackgroundColor: '#2E7D5C',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
+                    }, {
+                        label: 'Área Plantada (milhões ha)',
+                        data: [35, 38, 40, 43, 48, 52, 55, 60],
+                        borderColor: '#1A4A7A',
+                        backgroundColor: 'rgba(26, 74, 122, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 6,
+                        pointBackgroundColor: '#1A4A7A',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    family: 'Inter',
+                                    size: 12
+                                },
+                                usePointStyle: true,
+                                padding: 20
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'rgba(10, 61, 43, 0.9)',
+                            titleFont: { family: 'Inter', size: 14 },
+                            bodyFont: { family: 'Inter', size: 13 },
+                            padding: 12,
+                            cornerRadius: 8
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)'
+                            },
+                            ticks: {
+                                font: { family: 'Inter', size: 11 }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: { family: 'Inter', size: 11 }
+                            }
+                        }
+                    },
+                    interaction: {
+                        mode: 'nearest',
+                        axis: 'x',
+                        intersect: false
+                    }
+                }
+            });
+
+            // Gráfico de Tecnologias
+            const techCtx = document.getElementById('techChart').getContext('2d');
+            new Chart(techCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Agricultura de Precisão', 'Drones/Sensoriamento', 'Energia Renovável', 'Plantio Direto', 'ILPF'],
+                    datasets: [{
+                        label: 'Adoção (%)',
+                        data: [68, 45, 32, 85, 28],
+                        backgroundColor: [
+                            'rgba(46, 125, 92, 0.8)',
+                            'rgba(26, 74, 122, 0.8)',
+                            'rgba(124, 179, 66, 0.8)',
+                            'rgba(10, 61, 43, 0.8)',
+                            'rgba(30, 58, 47, 0.8)'
+                        ],
+                        borderColor: [
+                            '#2E7D5C',
+                            '#1A4A7A',
+                            '#7CB342',
+                            '#0A3D2B',
+                            '#1E3A2F'
+                        ],
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(10, 61, 43, 0.9)',
+                            titleFont: { family: 'Inter', size: 14 },
+                            bodyFont: { family: 'Inter', size: 13 },
+                            padding: 12,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.y + '% de adoção';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)'
+                            },
+                            ticks: {
+                                font: { family: 'Inter', size: 11 },
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: { family: 'Inter', size: 10 },
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
         // Função de cálculo de impacto ambiental
         function calcularImpacto() {
             const atividade = document.getElementById('atividade').value;
@@ -1869,6 +2366,172 @@
             document.getElementById('resultado').scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
+        // Funções do Quiz
+        function initQuiz() {
+            document.querySelectorAll('.quiz-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const questionDiv = this.closest('.quiz-question');
+                    const questionNum = questionDiv.dataset.question;
+                    
+                    // Remove seleção anterior
+                    questionDiv.querySelectorAll('.quiz-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // Adiciona seleção atual
+                    this.classList.add('selected');
+                    
+                    // Salva resposta
+                    answers[questionNum] = {
+                        value: this.dataset.value,
+                        correct: this.dataset.correct === 'true'
+                    };
+                    
+                    // Habilita botão próximo
+                    document.getElementById('nextBtn').disabled = false;
+                });
+            });
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < totalQuestions) {
+                // Esconde questão atual
+                document.querySelector(`.quiz-question[data-question="${currentQuestion}"]`).classList.remove('active');
+                
+                // Atualiza progresso
+                document.querySelector(`.progress-dot:nth-child(${currentQuestion})`).classList.add('completed');
+                document.querySelector(`.progress-dot:nth-child(${currentQuestion})`).classList.remove('active');
+                
+                currentQuestion++;
+                
+                // Mostra próxima questão
+                document.querySelector(`.quiz-question[data-question="${currentQuestion}"]`).classList.add('active');
+                document.querySelector(`.progress-dot:nth-child(${currentQuestion})`).classList.add('active');
+                
+                // Atualiza botões
+                document.getElementById('prevBtn').disabled = false;
+                
+                if (currentQuestion === totalQuestions) {
+                    document.getElementById('nextBtn').style.display = 'none';
+                    document.getElementById('finishBtn').style.display = 'flex';
+                }
+                
+                // Reseta botão próximo se já tiver resposta
+                const currentAnswer = answers[currentQuestion];
+                document.getElementById('nextBtn').disabled = !currentAnswer;
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 1) {
+                // Esconde questão atual
+                document.querySelector(`.quiz-question[data-question="${currentQuestion}"]`).classList.remove('active');
+                document.querySelector(`.progress-dot:nth-child(${currentQuestion})`).classList.remove('active');
+                
+                currentQuestion--;
+                
+                // Mostra questão anterior
+                document.querySelector(`.quiz-question[data-question="${currentQuestion}"]`).classList.add('active');
+                document.querySelector(`.progress-dot:nth-child(${currentQuestion})`).classList.add('active');
+                
+                // Atualiza botões
+                if (currentQuestion === 1) {
+                    document.getElementById('prevBtn').disabled = true;
+                }
+                
+                if (currentQuestion < totalQuestions) {
+                    document.getElementById('nextBtn').style.display = 'flex';
+                    document.getElementById('finishBtn').style.display = 'none';
+                }
+                
+                // Restaura seleção se existir
+                const currentAnswer = answers[currentQuestion];
+                if (currentAnswer) {
+                    const options = document.querySelector(`.quiz-question[data-question="${currentQuestion}"]`).querySelectorAll('.quiz-option');
+                    options.forEach(opt => {
+                        if (opt.dataset.value === currentAnswer.value) {
+                            opt.classList.add('selected');
+                        }
+                    });
+                    document.getElementById('nextBtn').disabled = false;
+                } else {
+                    document.getElementById('nextBtn').disabled = true;
+                }
+            }
+        }
+
+        function finishQuiz() {
+            // Calcula pontuação
+            score = 0;
+            Object.values(answers).forEach(answer => {
+                if (answer.correct) score++;
+            });
+            
+            // Mostra resultado
+            document.querySelector('.quiz-navigation').style.display = 'none';
+            document.querySelector('.quiz-progress').style.display = 'none';
+            document.querySelector(`.quiz-question[data-question="${currentQuestion}"]`).style.display = 'none';
+            
+            const resultDiv = document.getElementById('quizResult');
+            const resultIcon = document.getElementById('resultIcon');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultScore = document.getElementById('resultScore');
+            const resultMessage = document.getElementById('resultMessage');
+            
+            resultDiv.classList.add('show');
+            resultScore.textContent = `${score}/${totalQuestions}`;
+            
+            if (score === 5) {
+                resultIcon.textContent = '🏆';
+                resultTitle.textContent = 'Excelente!';
+                resultMessage.textContent = 'Parabéns! Você demonstrou excelente conhecimento sobre sustentabilidade no agronegócio. Continue assim!';
+                resultTitle.style.color = '#4CAF50';
+            } else if (score >= 3) {
+                resultIcon.textContent = '👏';
+                resultTitle.textContent = 'Muito Bom!';
+                resultMessage.textContent = 'Você tem um bom conhecimento sobre o tema. Que tal explorar mais nossas seções de tecnologias?';
+                resultTitle.style.color = '#2E7D5C';
+            } else {
+                resultIcon.textContent = '📚';
+                resultTitle.textContent = 'Continue Aprendendo';
+                resultMessage.textContent = 'Que tal explorar nosso conteúdo sobre tecnologias sustentáveis e voltar a fazer o quiz?';
+                resultTitle.style.color = '#1A4A7A';
+            }
+            
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function restartQuiz() {
+            currentQuestion = 1;
+            answers = {};
+            score = 0;
+            
+            // Reset UI
+            document.querySelectorAll('.quiz-question').forEach((q, index) => {
+                q.classList.remove('active');
+                if (index === 0) q.classList.add('active');
+                q.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected', 'correct', 'incorrect'));
+            });
+            
+            document.querySelectorAll('.progress-dot').forEach((dot, index) => {
+                dot.classList.remove('active', 'completed');
+                if (index === 0) dot.classList.add('active');
+            });
+            
+            document.querySelector('.quiz-navigation').style.display = 'flex';
+            document.querySelector('.quiz-progress').style.display = 'flex';
+            document.getElementById('quizResult').classList.remove('show');
+            document.getElementById('prevBtn').disabled = true;
+            document.getElementById('nextBtn').disabled = true;
+            document.getElementById('nextBtn').style.display = 'flex';
+            document.getElementById('finishBtn').style.display = 'none';
+            
+            window.scrollTo({ top: document.getElementById('quiz').offsetTop - 100, behavior: 'smooth' });
+        }
+
+        // Inicializa quiz
+        initQuiz();
+
         // Envio de formulário
         function enviarFormulario(event) {
             event.preventDefault();
@@ -1902,18 +2565,6 @@
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('animate');
-                    
-                    // Animar barras do gráfico
-                    if (entry.target.querySelector('.bar')) {
-                        const bars = entry.target.querySelectorAll('.bar');
-                        bars.forEach(bar => {
-                            const height = bar.dataset.height;
-                            setTimeout(() => {
-                                bar.style.height = height + '%';
-                            }, 200);
-                        });
-                    }
-                    
                     observer.unobserve(entry.target);
                 }
             });

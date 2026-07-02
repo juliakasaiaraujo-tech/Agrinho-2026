@@ -562,6 +562,144 @@
             margin-top: 0.2rem;
         }
 
+        /* Calculadora de Impacto */
+        .calculator-section {
+            background: linear-gradient(135deg, var(--bege-claro) 0%, #e8e0d5 100%);
+        }
+
+        .calculator-container {
+            background: var(--branco);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px var(--sombra);
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .calculator-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--verde-escuro);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group label i {
+            color: var(--verde-institucional);
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--verde-institucional);
+            box-shadow: 0 0 0 3px rgba(46, 125, 92, 0.1);
+        }
+
+        .form-group small {
+            color: var(--cinza-escuro);
+            opacity: 0.7;
+            font-size: 0.85rem;
+        }
+
+        .calculator-result {
+            background: linear-gradient(135deg, var(--verde-escuro), var(--verde-institucional));
+            border-radius: 16px;
+            padding: 2.5rem;
+            color: var(--branco);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .result-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .result-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .result-value {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-unit {
+            font-size: 1.5rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        .result-comparison {
+            background: rgba(255,255,255,0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            width: 100%;
+        }
+
+        .result-comparison p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .calculate-btn {
+            background: var(--verde-institucional);
+            color: var(--branco);
+            border: none;
+            padding: 1.2rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .calculate-btn:hover {
+            background: var(--verde-escuro);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46, 125, 92, 0.4);
+        }
+
         /* Gráficos */
         .charts-section {
             background: var(--bege-claro);
@@ -687,20 +825,20 @@
             box-shadow: 0 20px 50px rgba(0,0,0,0.2);
         }
 
-        .form-group {
+        .form-group-contact {
             margin-bottom: 1.5rem;
         }
 
-        .form-group label {
+        .form-group-contact label {
             display: block;
             margin-bottom: 0.5rem;
             color: var(--verde-escuro);
             font-weight: 600;
         }
 
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
+        .form-group-contact input,
+        .form-group-contact textarea,
+        .form-group-contact select {
             width: 100%;
             padding: 1rem;
             border: 2px solid #e0e0e0;
@@ -709,9 +847,9 @@
             transition: border-color 0.3s;
         }
 
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
+        .form-group-contact input:focus,
+        .form-group-contact textarea:focus,
+        .form-group-contact select:focus {
             outline: none;
             border-color: var(--verde-institucional);
         }
@@ -818,7 +956,8 @@
             }
 
             .comparison-grid,
-            .contact-grid {
+            .contact-grid,
+            .calculator-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -828,6 +967,10 @@
 
             .footer-content {
                 grid-template-columns: repeat(2, 1fr);
+            }
+
+            .calculator-result {
+                order: -1;
             }
         }
 
@@ -846,6 +989,10 @@
 
             .cta-buttons {
                 flex-direction: column;
+            }
+
+            .result-value {
+                font-size: 3rem;
             }
         }
 
@@ -879,7 +1026,7 @@
                 <li><a href="#inicio">Início</a></li>
                 <li><a href="#dados">Dados</a></li>
                 <li><a href="#tecnologias">Tecnologias</a></li>
-                <li><a href="#sustentabilidade">Sustentabilidade</a></li>
+                <li><a href="#calculadora">Calculadora</a></li>
                 <li><a href="#video">Vídeo</a></li>
                 <li><a href="#contato">Contato</a></li>
             </ul>
@@ -902,9 +1049,9 @@
                         <i class="fas fa-rocket"></i>
                         Explorar Tecnologias
                     </a>
-                    <a href="#video" class="btn btn-secondary">
-                        <i class="fas fa-play"></i>
-                        Ver Vídeo
+                    <a href="#calculadora" class="btn btn-secondary">
+                        <i class="fas fa-calculator"></i>
+                        Calcular Impacto
                     </a>
                 </div>
                 <div class="hero-stats">
@@ -1008,7 +1155,7 @@
             <!-- Grid de Imagens -->
             <div class="image-grid">
                 <div class="image-item">
-                    <img src="https://images.unsplash.com/photo-1530267981375-f0de91fe1757?w=400&q=80" alt="Plantação verde">
+                    <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&q=80" alt="Plantação verde">
                     <div class="image-overlay">
                         <strong>Lavoura Moderna</strong>
                         <p>Tecnologia de ponta</p>
@@ -1033,6 +1180,123 @@
                     <div class="image-overlay">
                         <strong>Solo Saudável</strong>
                         <p>Conservação</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Calculadora de Impacto Ambiental -->
+    <section id="calculadora" class="calculator-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Ferramenta Interativa</span>
+                <h2 class="section-title">Calculadora de Impacto Ambiental</h2>
+                <p class="section-subtitle">Calcule a pegada de carbono da sua propriedade rural e descubra como reduzir emissões.</p>
+            </div>
+
+            <div class="calculator-container">
+                <div class="calculator-grid">
+                    <div class="calculator-form">
+                        <div class="form-group">
+                            <label for="atividade">
+                                <i class="fas fa-tractor"></i>
+                                Tipo de Atividade
+                            </label>
+                            <select id="atividade" required>
+                                <option value="">Selecione a atividade</option>
+                                <option value="soja">Cultivo de Soja</option>
+                                <option value="milho">Cultivo de Milho</option>
+                                <option value="cana">Cana-de-Açúcar</option>
+                                <option value="cafe">Café</option>
+                                <option value="algodao">Algodão</option>
+                                <option value="pecuaria">Pecuária de Corte</option>
+                                <option value="pecuaria-leite">Pecuária Leiteira</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="area">
+                                <i class="fas fa-ruler-combined"></i>
+                                Área Total (hectares)
+                            </label>
+                            <input type="number" id="area" placeholder="Ex: 100" min="0" step="0.1" required>
+                            <small>Informe o tamanho total da propriedade</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fertilizantes">
+                                <i class="fas fa-flask"></i>
+                                Fertilizantes (toneladas/ano)
+                            </label>
+                            <input type="number" id="fertilizantes" placeholder="Ex: 50" min="0" step="0.1" required>
+                            <small>Quantidade total de fertilizantes químicos utilizados</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="combustivel">
+                                <i class="fas fa-gas-pump"></i>
+                                Combustível (litros/ano)
+                            </label>
+                            <input type="number" id="combustivel" placeholder="Ex: 10000" min="0" step="100" required>
+                            <small>Diesel, gasolina e outros combustíveis</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="energia">
+                                <i class="fas fa-bolt"></i>
+                                Energia Elétrica (kWh/mês)
+                            </label>
+                            <input type="number" id="energia" placeholder="Ex: 2000" min="0" step="100" required>
+                            <small>Consumo médio mensal de energia</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="agua">
+                                <i class="fas fa-tint"></i>
+                                Uso de Água (m³/ano)
+                            </label>
+                            <input type="number" id="agua" placeholder="Ex: 50000" min="0" step="1000" required>
+                            <small>Volume total de água utilizado na irrigação</small>
+                        </div>
+
+                        <button type="button" class="calculate-btn" onclick="calcularImpacto()">
+                            <i class="fas fa-calculator"></i>
+                            Calcular Emissões
+                        </button>
+                    </div>
+
+                    <div class="calculator-result" id="resultado" style="display: none;">
+                        <div class="result-icon">
+                            <i class="fas fa-cloud"></i>
+                        </div>
+                        <div class="result-title">Sua Pegada de Carbono Anual</div>
+                        <div class="result-value" id="valorEmissao">0</div>
+                        <div class="result-unit">toneladas de CO₂e</div>
+                        
+                        <div class="result-comparison">
+                            <p id="comparacao"></p>
+                        </div>
+
+                        <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.2); width: 100%;">
+                            <p style="font-size: 0.9rem; margin-bottom: 0.5rem;"><strong>Dicas para reduzir:</strong></p>
+                            <ul style="text-align: left; font-size: 0.85rem; line-height: 1.8; padding-left: 1.2rem;">
+                                <li>Adote energia solar fotovoltaica</li>
+                                <li>Implemente plantio direto</li>
+                                <li>Use bioinsumos e fertilizantes orgânicos</li>
+                                <li>Invista em ILPF (Integração Lavoura-Pecuária-Floresta)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="calculator-result" id="resultado-inicial" style="background: linear-gradient(135deg, #e0e0e0, #f0f0f0); color: var(--cinza-escuro);">
+                        <div class="result-icon" style="color: var(--verde-institucional);">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <div class="result-title" style="color: var(--cinza-escuro);">Preencha os dados</div>
+                        <p style="opacity: 0.8; line-height: 1.6;">
+                            Informe os dados da sua propriedade para calcular o impacto ambiental e receber recomendações personalizadas de sustentabilidade.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -1420,16 +1684,16 @@
             </div>
 
             <div class="contact-grid">
-                <form class="contact-form">
-                    <div class="form-group">
+                <form class="contact-form" onsubmit="enviarFormulario(event)">
+                    <div class="form-group-contact">
                         <label for="nome">Nome Completo</label>
                         <input type="text" id="nome" name="nome" required placeholder="Digite seu nome">
                     </div>
-                    <div class="form-group">
-                        <label for="email">E-mail</label>
-                        <input type="email" id="email" name="email" required placeholder="seu@email.com">
+                    <div class="form-group-contact">
+                        <label for="email-contato">E-mail</label>
+                        <input type="email" id="email-contato" name="email" required placeholder="seu@email.com">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group-contact">
                         <label for="assunto">Assunto</label>
                         <select id="assunto" name="assunto" required>
                             <option value="">Selecione um assunto</option>
@@ -1440,7 +1704,7 @@
                             <option value="outro">Outro</option>
                         </select>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group-contact">
                         <label for="mensagem">Mensagem</label>
                         <textarea id="mensagem" name="mensagem" rows="5" required placeholder="Digite sua mensagem..."></textarea>
                     </div>
@@ -1507,7 +1771,7 @@
                     <li><a href="#inicio">Início</a></li>
                     <li><a href="#dados">Dados e Estatísticas</a></li>
                     <li><a href="#tecnologias">Tecnologias</a></li>
-                    <li><a href="#sustentabilidade">Sustentabilidade</a></li>
+                    <li><a href="#calculadora">Calculadora</a></li>
                     <li><a href="#contato">Contato</a></li>
                 </ul>
             </div>
@@ -1538,6 +1802,81 @@
     </footer>
 
     <script>
+        // Função de cálculo de impacto ambiental
+        function calcularImpacto() {
+            const atividade = document.getElementById('atividade').value;
+            const area = parseFloat(document.getElementById('area').value) || 0;
+            const fertilizantes = parseFloat(document.getElementById('fertilizantes').value) || 0;
+            const combustivel = parseFloat(document.getElementById('combustivel').value) || 0;
+            const energia = parseFloat(document.getElementById('energia').value) || 0;
+            const agua = parseFloat(document.getElementById('agua').value) || 0;
+
+            if (!atividade || area === 0) {
+                alert('Por favor, preencha pelo menos o tipo de atividade e a área.');
+                return;
+            }
+
+            // Fatores de emissão (kg CO2e por unidade)
+            const fatores = {
+                fertilizantes: 3.6, // por tonelada
+                combustivel: 2.7,   // por litro (diesel)
+                energia: 0.08,      // por kWh (média Brasil)
+                agua: 0.0003        // por m³ (bombeamento e tratamento)
+            };
+
+            // Cálculo das emissões
+            const emissaoFertilizantes = fertilizantes * fatores.fertilizantes;
+            const emissaoCombustivel = combustivel * fatores.combustivel;
+            const emissaoEnergia = (energia * 12) * fatores.energia; // anual
+            const emissaoAgua = agua * fatores.agua;
+
+            // Fator específico por atividade
+            const fatoresAtividade = {
+                soja: 0.5,
+                milho: 0.6,
+                cana: 0.4,
+                cafe: 0.7,
+                algodao: 0.8,
+                pecuaria: 1.2,
+                'pecuaria-leite': 1.0
+            };
+
+            const emissaoAtividade = area * (fatoresAtividade[atividade] || 0.5);
+
+            const totalEmissao = emissaoFertilizantes + emissaoCombustivel + emissaoEnergia + emissaoAgua + emissaoAtividade;
+
+            // Exibir resultado
+            document.getElementById('valorEmissao').textContent = totalEmissao.toFixed(1);
+            
+            // Comparação
+            const carrosEquivalentes = Math.floor(totalEmissao / 2.3); // 2.3 ton CO2/carro/ano
+            const arvoresNecessarias = Math.ceil(totalEmissao / 0.02); // 20 kg CO2/árvore/ano
+            
+            let textoComparacao = `
+                <strong>Isso equivale a:</strong><br>
+                • ${carrosEquivalentes} carros circulando por um ano<br>
+                • ${arvoresNecessarias} árvores necessárias para compensar<br>
+                • ${(totalEmissao / area).toFixed(2)} ton CO₂e por hectare
+            `;
+            
+            document.getElementById('comparacao').innerHTML = textoComparacao;
+            
+            // Mostrar resultado
+            document.getElementById('resultado').style.display = 'flex';
+            document.getElementById('resultado-inicial').style.display = 'none';
+            
+            // Scroll suave até o resultado
+            document.getElementById('resultado').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Envio de formulário
+        function enviarFormulario(event) {
+            event.preventDefault();
+            const nome = document.getElementById('nome').value;
+            alert(`Obrigado pelo contato, ${nome}! Respondemos em breve.`);
+            event.target.reset();
+        }
+
         // Animação dos números
         function animateValue(element, start, end, duration) {
             let startTimestamp = null;
@@ -1638,18 +1977,6 @@
             }
             
             lastScroll = currentScroll;
-        });
-
-        // Formulário de contato
-        document.querySelector('.contact-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData);
-            
-            alert(`Mensagem enviada com sucesso!\n\nObrigado pelo contato, ${data.nome}.\nResponderemos em breve para: ${data.email}`);
-            
-            e.target.reset();
         });
 
         // Animação inicial dos números do hero

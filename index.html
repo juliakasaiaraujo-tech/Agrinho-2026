@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agro Forte - Produção Sustentável e Tecnologia no Campo</title>
+    <title>Agro Forte - Mapa das Principais Fazendas</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
         :root {
             --verde-escuro: #0A3D2B;
@@ -18,7 +19,6 @@
             --bege-claro: #F5F0E8;
             --branco: #FFFFFF;
             --azul-escuro: #1A4A7A;
-            --sombra: rgba(10, 61, 43, 0.1);
         }
 
         * {
@@ -27,36 +27,21 @@
             box-sizing: border-box;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
-
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bege-claro);
             color: var(--cinza-escuro);
-            line-height: 1.6;
-            overflow-x: hidden;
         }
 
-        /* Navegação */
+        /* Header */
         header {
             background: var(--branco);
-            box-shadow: 0 2px 20px var(--sombra);
+            box-shadow: 0 2px 20px rgba(10, 61, 43, 0.1);
+            padding: 1.2rem 2rem;
             position: fixed;
             width: 100%;
             top: 0;
             z-index: 1000;
-            transition: all 0.3s ease;
-        }
-
-        nav {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 1.2rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
 
         .logo {
@@ -74,2575 +59,948 @@
             font-size: 2.2rem;
         }
 
-        .nav-links {
-            display: flex;
-            gap: 2.5rem;
-            list-style: none;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--cinza-escuro);
-            font-weight: 500;
-            font-size: 0.95rem;
-            position: relative;
-            transition: color 0.3s;
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--verde-institucional);
-            transition: width 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: var(--verde-institucional);
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
-        .mobile-menu {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            cursor: pointer;
-        }
-
-        .mobile-menu span {
-            width: 25px;
-            height: 3px;
-            background: var(--verde-escuro);
-            transition: 0.3s;
-        }
-
-        /* Hero Section */
-        .hero {
+        /* Container do Mapa */
+        .map-wrapper {
             margin-top: 80px;
-            min-height: 90vh;
-            background: linear-gradient(135deg, var(--verde-escuro) 0%, var(--verde-escuro-2) 50%, var(--azul-escuro) 100%);
+            height: calc(100vh - 80px);
             position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
         }
 
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1920&q=80') center/cover;
-            opacity: 0.3;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 4rem 2rem;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-        }
-
-        .hero-text h1 {
-            font-size: 3.5rem;
-            color: var(--branco);
-            font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 1.5rem;
-        }
-
-        .hero-text h1 span {
-            color: #90EE90;
-        }
-
-        .hero-text p {
-            font-size: 1.25rem;
-            color: rgba(255,255,255,0.9);
-            margin-bottom: 2rem;
-            line-height: 1.8;
-        }
-
-        .hero-stats {
-            display: flex;
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .stat-item {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--branco);
-            display: block;
-        }
-
-        .stat-label {
-            color: rgba(255,255,255,0.8);
-            font-size: 0.9rem;
-        }
-
-        .hero-image {
-            position: relative;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
-        }
-
-        .hero-image img {
-            width: 100%;
-            height: 500px;
-            object-fit: cover;
-        }
-
-        .cta-buttons {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        .btn {
-            padding: 1rem 2.5rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-
-        .btn-primary {
-            background: var(--verde-institucional);
-            color: var(--branco);
-            box-shadow: 0 4px 15px rgba(46, 125, 92, 0.4);
-        }
-
-        .btn-primary:hover {
-            background: var(--verde-escuro);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(46, 125, 92, 0.6);
-        }
-
-        .btn-secondary {
-            background: var(--branco);
-            color: var(--verde-escuro);
-            border: 2px solid var(--branco);
-        }
-
-        .btn-secondary:hover {
-            background: transparent;
-            color: var(--branco);
-        }
-
-        /* Seções Gerais */
-        section {
-            padding: 6rem 2rem;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 4rem;
-        }
-
-        .section-tag {
-            display: inline-block;
-            padding: 0.5rem 1.5rem;
-            background: var(--verde-institucional);
-            color: var(--branco);
-            border-radius: 50px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 1rem;
-        }
-
-        .section-title {
-            font-size: 2.8rem;
-            color: var(--verde-escuro);
-            margin-bottom: 1rem;
-            font-weight: 700;
-        }
-
-        .section-subtitle {
-            font-size: 1.2rem;
-            color: var(--cinza-escuro);
-            max-width: 800px;
-            margin: 0 auto;
-            opacity: 0.8;
-        }
-
-        /* Cards de Dados */
-        .data-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-bottom: 4rem;
-        }
-
-        .data-card {
-            background: var(--branco);
-            padding: 2.5rem;
-            border-radius: 16px;
-            box-shadow: 0 10px 40px var(--sombra);
-            transition: transform 0.3s;
-            border-left: 4px solid var(--verde-institucional);
-        }
-
-        .data-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .data-icon {
-            font-size: 3rem;
-            color: var(--verde-institucional);
-            margin-bottom: 1rem;
-        }
-
-        .data-number {
-            font-size: 3rem;
-            font-weight: 800;
-            color: var(--verde-escuro);
-            margin-bottom: 0.5rem;
-        }
-
-        .data-label {
-            font-size: 1.1rem;
-            color: var(--cinza-escuro);
-            font-weight: 500;
-            margin-bottom: 1rem;
-        }
-
-        .data-description {
-            color: var(--cinza-escuro);
-            opacity: 0.8;
-            line-height: 1.6;
-        }
-
-        /* Grid de Imagens */
-        .image-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.5rem;
-            margin: 4rem 0;
-        }
-
-        .image-item {
-            position: relative;
-            border-radius: 12px;
-            overflow: hidden;
-            aspect-ratio: 1;
-            box-shadow: 0 10px 30px var(--sombra);
-        }
-
-        .image-item img {
-            width: 100%;
+        #fazendasMap {
             height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s;
-        }
-
-        .image-item:hover img {
-            transform: scale(1.1);
-        }
-
-        .image-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(to top, var(--verde-escuro), transparent);
-            padding: 2rem 1rem 1rem;
-            color: var(--branco);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .image-item:hover .image-overlay {
-            opacity: 1;
-        }
-
-        /* Video Section */
-        .video-section {
-            background: var(--verde-escuro-2);
-            padding: 6rem 2rem;
-        }
-
-        .video-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
-            overflow: hidden;
-            border-radius: 20px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
-        }
-
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
-            height: 100%;
-            border-radius: 20px;
+            z-index: 1;
         }
 
-        .video-title {
-            text-align: center;
-            color: var(--branco);
-            font-size: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        /* Tecnologias */
-        .tech-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2.5rem;
-        }
-
-        .tech-card {
-            background: var(--branco);
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 10px 40px var(--sombra);
-            transition: transform 0.3s;
-        }
-
-        .tech-card:hover {
-            transform: translateY(-10px);
-        }
-
-        .tech-image {
-            height: 250px;
-            background: linear-gradient(135deg, var(--verde-institucional), var(--azul-escuro));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .tech-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0.9;
-        }
-
-        .tech-icon {
-            position: absolute;
-            font-size: 4rem;
-            color: rgba(255,255,255,0.3);
-        }
-
-        .tech-content {
-            padding: 2rem;
-        }
-
-        .tech-content h3 {
-            color: var(--verde-escuro);
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .tech-content p {
-            color: var(--cinza-escuro);
-            line-height: 1.8;
-            opacity: 0.9;
-        }
-
-        .tech-list {
-            list-style: none;
-            margin-top: 1.5rem;
-        }
-
-        .tech-list li {
-            padding: 0.5rem 0;
-            color: var(--cinza-escuro);
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-        }
-
-        .tech-list li i {
-            color: var(--verde-institucional);
-        }
-
-        /* Comparação Antes/Depois */
-        .comparison-section {
-            background: var(--branco);
-        }
-
-        .comparison-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            align-items: center;
-        }
-
-        .comparison-image {
-            position: relative;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 20px 50px var(--sombra);
-        }
-
-        .comparison-image img {
-            width: 100%;
-            display: block;
-        }
-
-        .comparison-label {
+        /* Painel Lateral */
+        .side-panel {
             position: absolute;
             top: 20px;
             left: 20px;
-            background: var(--verde-institucional);
-            color: var(--branco);
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-        }
-
-        .comparison-content h3 {
-            color: var(--verde-escuro);
-            font-size: 2rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .comparison-content p {
-            margin-bottom: 1.5rem;
-            line-height: 1.8;
-            color: var(--cinza-escuro);
-        }
-
-        .benefits-list {
-            list-style: none;
-        }
-
-        .benefits-list li {
-            padding: 0.8rem 0;
-            display: flex;
-            align-items: start;
-            gap: 1rem;
-            color: var(--cinza-escuro);
-        }
-
-        .benefits-list i {
-            color: var(--verde-institucional);
-            font-size: 1.2rem;
-            margin-top: 0.2rem;
-        }
-
-        /* Calculadora de Impacto */
-        .calculator-section {
-            background: linear-gradient(135deg, var(--bege-claro) 0%, #e8e0d5 100%);
-        }
-
-        .calculator-container {
+            z-index: 1000;
             background: var(--branco);
-            border-radius: 20px;
-            padding: 3rem;
-            box-shadow: 0 20px 60px var(--sombra);
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .calculator-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-        }
-
-        .calculator-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .form-group label {
-            font-weight: 600;
-            color: var(--verde-escuro);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .form-group label i {
-            color: var(--verde-institucional);
-        }
-
-        .form-group input,
-        .form-group select {
-            padding: 1rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-family: 'Inter', sans-serif;
-            transition: all 0.3s;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: var(--verde-institucional);
-            box-shadow: 0 0 0 3px rgba(46, 125, 92, 0.1);
-        }
-
-        .form-group small {
-            color: var(--cinza-escuro);
-            opacity: 0.7;
-            font-size: 0.85rem;
-        }
-
-        .calculator-result {
-            background: linear-gradient(135deg, var(--verde-escuro), var(--verde-institucional));
             border-radius: 16px;
-            padding: 2.5rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            max-width: 400px;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+            transition: all 0.3s;
+        }
+
+        .panel-header {
+            background: linear-gradient(135deg, var(--verde-escuro), var(--verde-institucional));
             color: var(--branco);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
+            padding: 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
-        .result-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            opacity: 0.9;
-        }
-
-        .result-title {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-            opacity: 0.9;
-        }
-
-        .result-value {
-            font-size: 4rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-        }
-
-        .result-unit {
+        .panel-header h2 {
             font-size: 1.5rem;
-            opacity: 0.9;
-            margin-bottom: 2rem;
-        }
-
-        .result-comparison {
-            background: rgba(255,255,255,0.1);
-            padding: 1rem;
-            border-radius: 8px;
-            width: 100%;
-        }
-
-        .result-comparison p {
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        .calculate-btn {
-            background: var(--verde-institucional);
-            color: var(--branco);
-            border: none;
-            padding: 1.2rem;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
+            margin-bottom: 0.5rem;
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 0.8rem;
-            margin-top: 1rem;
         }
 
-        .calculate-btn:hover {
-            background: var(--verde-escuro);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(46, 125, 92, 0.4);
-        }
-
-        /* Quiz Section */
-        .quiz-section {
-            background: linear-gradient(135deg, var(--verde-escuro) 0%, var(--verde-escuro-2) 100%);
-            color: var(--branco);
-        }
-
-        .quiz-section .section-title {
-            color: var(--branco);
-        }
-
-        .quiz-section .section-subtitle {
-            color: rgba(255,255,255,0.9);
-        }
-
-        .quiz-container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: var(--branco);
-            border-radius: 20px;
-            padding: 3rem;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-
-        .quiz-header {
-            text-align: center;
-            margin-bottom: 2.5rem;
-            padding-bottom: 2rem;
-            border-bottom: 3px solid var(--bege-claro);
-        }
-
-        .quiz-header h3 {
-            color: var(--verde-escuro);
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .quiz-progress {
-            display: flex;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .progress-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #e0e0e0;
-            transition: all 0.3s;
-        }
-
-        .progress-dot.active {
-            background: var(--verde-institucional);
-            transform: scale(1.3);
-        }
-
-        .progress-dot.completed {
-            background: var(--verde-institucional);
-        }
-
-        .quiz-question {
-            display: none;
-            animation: fadeIn 0.5s;
-        }
-
-        .quiz-question.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateX(20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        .question-text {
-            font-size: 1.3rem;
-            color: var(--verde-escuro);
-            font-weight: 600;
-            margin-bottom: 2rem;
+        .panel-header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
             line-height: 1.5;
         }
 
-        .question-number {
-            display: inline-block;
-            background: var(--verde-institucional);
-            color: var(--branco);
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 35px;
-            margin-right: 1rem;
-            font-weight: 700;
+        .panel-content {
+            padding: 1.5rem;
         }
 
-        .quiz-options {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
+        /* Filtros */
+        .filters {
+            margin-bottom: 1.5rem;
         }
 
-        .quiz-option {
-            background: var(--bege-claro);
-            border: 2px solid transparent;
-            padding: 1.2rem;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .quiz-option:hover {
-            background: #e8e0d5;
-            border-color: var(--verde-institucional);
-            transform: translateX(5px);
-        }
-
-        .quiz-option.selected {
-            background: var(--verde-institucional);
-            color: var(--branco);
-            border-color: var(--verde-institucional);
-        }
-
-        .quiz-option.correct {
-            background: #4CAF50;
-            color: var(--branco);
-            border-color: #4CAF50;
-        }
-
-        .quiz-option.incorrect {
-            background: #f44336;
-            color: var(--branco);
-            border-color: #f44336;
-        }
-
-        .option-letter {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            background: var(--branco);
-            color: var(--verde-escuro);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-
-        .quiz-option.selected .option-letter,
-        .quiz-option.correct .option-letter,
-        .quiz-option.incorrect .option-letter {
-            background: rgba(255,255,255,0.2);
-            color: var(--branco);
-        }
-
-        .quiz-navigation {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 2.5rem;
-            padding-top: 2rem;
-            border-top: 2px solid var(--bege-claro);
-        }
-
-        .quiz-btn {
-            padding: 1rem 2.5rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
+        .filter-title {
             font-weight: 600;
+            color: var(--verde-escuro);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--bege-claro);
+            background: var(--branco);
+            border-radius: 20px;
             cursor: pointer;
             transition: all 0.3s;
+            font-size: 0.85rem;
+            font-weight: 500;
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
 
-        .quiz-btn-prev {
-            background: #e0e0e0;
-            color: var(--cinza-escuro);
-        }
-
-        .quiz-btn-prev:hover {
-            background: #d0d0d0;
-        }
-
-        .quiz-btn-next, .quiz-btn-finish {
-            background: var(--verde-institucional);
-            color: var(--branco);
-        }
-
-        .quiz-btn-next:hover, .quiz-btn-finish:hover {
-            background: var(--verde-escuro);
+        .filter-btn:hover {
+            border-color: var(--verde-institucional);
             transform: translateY(-2px);
         }
 
-        .quiz-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none !important;
-        }
-
-        .quiz-result {
-            display: none;
-            text-align: center;
-            padding: 2rem;
-        }
-
-        .quiz-result.show {
-            display: block;
-            animation: fadeIn 0.5s;
-        }
-
-        .result-icon-large {
-            font-size: 6rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .result-title-quiz {
-            font-size: 2.5rem;
-            color: var(--verde-escuro);
-            margin-bottom: 1rem;
-            font-weight: 700;
-        }
-
-        .result-score {
-            font-size: 4rem;
-            font-weight: 800;
-            color: var(--verde-institucional);
-            margin-bottom: 1rem;
-        }
-
-        .result-message {
-            font-size: 1.2rem;
-            color: var(--cinza-escuro);
-            margin-bottom: 2rem;
-            line-height: 1.6;
-        }
-
-        .result-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-        }
-
-        /* Gráficos */
-        .charts-section {
-            background: var(--bege-claro);
-        }
-
-        .charts-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 3rem;
-        }
-
-        .chart-container {
-            background: var(--branco);
-            padding: 2.5rem;
-            border-radius: 16px;
-            box-shadow: 0 10px 40px var(--sombra);
-        }
-
-        .chart-title {
-            color: var(--verde-escuro);
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-
-        .chart-wrapper {
-            position: relative;
-            height: 400px;
-        }
-
-        /* Parceiros */
-        .partners-section {
-            background: var(--branco);
-            padding: 4rem 2rem;
-        }
-
-        .partners-grid {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 4rem;
-            flex-wrap: wrap;
-            margin-top: 3rem;
-        }
-
-        .partner-logo {
-            height: 80px;
-            opacity: 0.6;
-            transition: opacity 0.3s;
-            filter: grayscale(100%);
-        }
-
-        .partner-logo:hover {
-            opacity: 1;
-            filter: grayscale(0%);
-        }
-
-        /* Contato */
-        .contact-section {
-            background: linear-gradient(135deg, var(--verde-escuro), var(--verde-escuro-2));
+        .filter-btn.active {
+            background: var(--verde-institucional);
             color: var(--branco);
-        }
-
-        .contact-section .section-title {
-            color: var(--branco);
-        }
-
-        .contact-section .section-subtitle {
-            color: rgba(255,255,255,0.9);
-        }
-
-        .contact-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            margin-top: 3rem;
-        }
-
-        .contact-form {
-            background: var(--branco);
-            padding: 3rem;
-            border-radius: 16px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-        }
-
-        .form-group-contact {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group-contact label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--verde-escuro);
-            font-weight: 600;
-        }
-
-        .form-group-contact input,
-        .form-group-contact textarea,
-        .form-group-contact select {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-family: 'Inter', sans-serif;
-            transition: border-color 0.3s;
-        }
-
-        .form-group-contact input:focus,
-        .form-group-contact textarea:focus,
-        .form-group-contact select:focus {
-            outline: none;
             border-color: var(--verde-institucional);
         }
 
-        .contact-info {
+        .filter-btn .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        /* Lista de Fazendas */
+        .farms-list {
             display: flex;
             flex-direction: column;
-            gap: 2rem;
+            gap: 1rem;
         }
 
-        .info-card {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            padding: 2rem;
+        .farm-card {
+            background: var(--branco);
+            border: 2px solid var(--bege-claro);
             border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.2);
+            padding: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .farm-card:hover {
+            border-color: var(--verde-institucional);
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .farm-card.active {
+            border-color: var(--verde-institucional);
+            background: rgba(46, 125, 92, 0.05);
+        }
+
+        .farm-header {
             display: flex;
+            justify-content: space-between;
             align-items: start;
-            gap: 1.5rem;
-        }
-
-        .info-icon {
-            font-size: 2rem;
-            color: #90EE90;
-        }
-
-        .info-content h4 {
-            margin-bottom: 0.5rem;
-            font-size: 1.2rem;
-        }
-
-        .info-content p {
-            opacity: 0.9;
-            line-height: 1.6;
-        }
-
-        /* Footer */
-        footer {
-            background: var(--cinza-escuro);
-            color: var(--branco);
-            padding: 3rem 2rem 1rem;
-        }
-
-        .footer-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 3rem;
-            margin-bottom: 3rem;
-        }
-
-        .footer-section h4 {
-            color: var(--verde-institucional);
-            margin-bottom: 1.5rem;
-            font-size: 1.2rem;
-        }
-
-        .footer-section ul {
-            list-style: none;
-        }
-
-        .footer-section ul li {
             margin-bottom: 0.8rem;
         }
 
-        .footer-section a {
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
-            transition: color 0.3s;
+        .farm-name {
+            font-weight: 700;
+            color: var(--verde-escuro);
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
         }
 
-        .footer-section a:hover {
-            color: var(--verde-institucional);
+        .farm-state {
+            background: var(--bege-claro);
+            color: var(--verde-escuro);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
         }
 
-        .footer-bottom {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
+        .farm-location {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--cinza-escuro);
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
             opacity: 0.8;
         }
 
+        .farm-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+        }
+
+        .stat-item {
+            background: var(--bege-claro);
+            padding: 0.6rem;
+            border-radius: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--cinza-escuro);
+            opacity: 0.8;
+            margin-bottom: 0.2rem;
+        }
+
+        .stat-value {
+            font-weight: 700;
+            color: var(--verde-institucional);
+            font-size: 0.95rem;
+        }
+
+        .farm-products {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 0.8rem;
+        }
+
+        .product-tag {
+            background: rgba(46, 125, 92, 0.1);
+            color: var(--verde-escuro);
+            padding: 0.3rem 0.7rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* Estatísticas Rápidas */
+        .quick-stats {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--branco);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            min-width: 280px;
+        }
+
+        .quick-stats h4 {
+            color: var(--verde-escuro);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid var(--bege-claro);
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label-map {
+            color: var(--cinza-escuro);
+            font-size: 0.9rem;
+        }
+
+        .stat-value-map {
+            font-weight: 700;
+            color: var(--verde-institucional);
+        }
+
+        /* Popup Customizado */
+        .custom-popup .leaflet-popup-content-wrapper {
+            background: var(--branco);
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            padding: 0;
+            overflow: hidden;
+            min-width: 320px;
+        }
+
+        .custom-popup .leaflet-popup-content {
+            margin: 0;
+            width: 320px !important;
+        }
+
+        .custom-popup .leaflet-popup-tip {
+            background: var(--branco);
+        }
+
+        .popup-header {
+            background: linear-gradient(135deg, var(--verde-escuro), var(--verde-institucional));
+            color: var(--branco);
+            padding: 1.5rem;
+        }
+
+        .popup-header h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .popup-header .state-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .popup-body {
+            padding: 1.5rem;
+        }
+
+        .popup-description {
+            color: var(--cinza-escuro);
+            line-height: 1.6;
+            margin-bottom: 1.2rem;
+            font-size: 0.95rem;
+        }
+
+        .popup-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .popup-info-item {
+            background: var(--bege-claro);
+            padding: 0.8rem;
+            border-radius: 8px;
+        }
+
+        .popup-info-label {
+            font-size: 0.8rem;
+            color: var(--cinza-escuro);
+            opacity: 0.8;
+            margin-bottom: 0.3rem;
+        }
+
+        .popup-info-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--verde-escuro);
+        }
+
+        .popup-products {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .popup-product-tag {
+            background: rgba(46, 125, 92, 0.1);
+            color: var(--verde-escuro);
+            padding: 0.4rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* Legenda */
+        .legend {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: var(--branco);
+            padding: 1.2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .legend h4 {
+            color: var(--verde-escuro);
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 0.6rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .legend-item:hover {
+            transform: translateX(5px);
+        }
+
+        .legend-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid var(--branco);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .legend-soja { background: #2E7D5C; }
+        .legend-milho { background: #1A4A7A; }
+        .legend-cafe { background: #8B4513; }
+        .legend-cana { background: #228B22; }
+        .legend-pecuaria { background: #DC143C; }
+        .legend-algodao { background: #DAA520; }
+
         /* Responsivo */
-        @media (max-width: 968px) {
-            .nav-links {
-                display: none;
+        @media (max-width: 768px) {
+            .side-panel {
+                left: 10px;
+                right: 10px;
+                max-width: none;
+                max-height: 50vh;
             }
 
-            .mobile-menu {
-                display: flex;
+            .quick-stats {
+                right: 10px;
+                left: 10px;
+                min-width: auto;
             }
 
-            .hero-content {
-                grid-template-columns: 1fr;
-            }
-
-            .hero-text h1 {
-                font-size: 2.5rem;
-            }
-
-            .image-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .comparison-grid,
-            .contact-grid,
-            .calculator-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .charts-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-content {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .calculator-result {
-                order: -1;
-            }
-
-            .quiz-container {
-                padding: 2rem 1.5rem;
+            .legend {
+                left: 10px;
+                bottom: 10px;
             }
         }
 
-        @media (max-width: 640px) {
-            .hero-stats {
-                flex-direction: column;
-            }
-
-            .image-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-content {
-                grid-template-columns: 1fr;
-            }
-
-            .cta-buttons {
-                flex-direction: column;
-            }
-
-            .result-value {
-                font-size: 3rem;
-            }
-
-            .charts-grid {
-                grid-template-columns: 1fr;
-            }
+        /* Scrollbar personalizada */
+        .side-panel::-webkit-scrollbar {
+            width: 8px;
         }
 
-        /* Animações */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .side-panel::-webkit-scrollbar-track {
+            background: var(--bege-claro);
+            border-radius: 4px;
         }
 
-        .animate {
-            animation: fadeInUp 0.8s ease;
+        .side-panel::-webkit-scrollbar-thumb {
+            background: var(--verde-institucional);
+            border-radius: 4px;
+        }
+
+        .side-panel::-webkit-scrollbar-thumb:hover {
+            background: var(--verde-escuro);
         }
     </style>
 </head>
 <body>
 
-    <!-- Navegação -->
     <header>
-        <nav>
-            <a href="#" class="logo">
-                <i class="fas fa-leaf"></i>
-                Agro Forte
-            </a>
-            <ul class="nav-links">
-                <li><a href="#inicio">Início</a></li>
-                <li><a href="#dados">Dados</a></li>
-                <li><a href="#tecnologias">Tecnologias</a></li>
-                <li><a href="#calculadora">Calculadora</a></li>
-                <li><a href="#graficos">Gráficos</a></li>
-                <li><a href="#quiz">Quiz</a></li>
-                <li><a href="#contato">Contato</a></li>
-            </ul>
-            <div class="mobile-menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </nav>
+        <a href="#" class="logo">
+            <i class="fas fa-leaf"></i>
+            Agro Forte
+        </a>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero" id="inicio">
-        <div class="hero-content">
-            <div class="hero-text">
-                <h1>Agro Forte, <span>Futuro Sustentável</span></h1>
-                <p>O agronegócio brasileiro combina alta produtividade com preservação ambiental. Conheça as tecnologias e práticas que estão revolucionando o campo.</p>
-                <div class="cta-buttons">
-                    <a href="#tecnologias" class="btn btn-primary">
-                        <i class="fas fa-rocket"></i>
-                        Explorar Tecnologias
-                    </a>
-                    <a href="#quiz" class="btn btn-secondary">
-                        <i class="fas fa-question-circle"></i>
-                        Teste seus Conhecimentos
-                    </a>
-                </div>
-                <div class="hero-stats">
-                    <div class="stat-item">
-                        <span class="stat-number">24.5%</span>
-                        <span class="stat-label">do PIB Brasileiro</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">48%</span>
-                        <span class="stat-label">das Exportações</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">400%+</span>
-                        <span class="stat-label">Crescimento em Grãos</span>
-                    </div>
-                </div>
+    <div class="map-wrapper">
+        <div id="fazendasMap"></div>
+
+        <!-- Painel Lateral -->
+        <div class="side-panel">
+            <div class="panel-header">
+                <h2><i class="fas fa-map-marked-alt"></i> Principais Fazendas</h2>
+                <p>Conheça as maiores propriedades agropecuárias do Brasil e suas produções</p>
             </div>
-            <div class="hero-image">
-                <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=800&q=80" alt="Plantação moderna ao amanhecer">
-            </div>
-        </div>
-    </section>
-
-    <!-- Dados e Números -->
-    <section id="dados">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Dados & Números</span>
-                <h2 class="section-title">Produção Agrícola Brasileira</h2>
-                <p class="section-subtitle">O agronegócio representa um dos pilares da economia brasileira, combinando alta tecnologia, escala e competitividade internacional.</p>
-            </div>
-
-            <div class="data-grid">
-                <div class="data-card">
-                    <div class="data-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <div class="data-number">R$ 1,3 tri</div>
-                    <div class="data-label">Valor da Produção</div>
-                    <div class="data-description">
-                        A agropecuária brasileira gera milhões de empregos diretos e indiretos, movimentando toda a cadeia produtiva do campo à cidade.
-                    </div>
-                </div>
-
-                <div class="data-card">
-                    <div class="data-icon">
-                        <i class="fas fa-globe-americas"></i>
-                    </div>
-                    <div class="data-number">1º Lugar</div>
-                    <div class="data-label">Exportação de Soja</div>
-                    <div class="data-description">
-                        Brasil é líder mundial na exportação de soja, açúcar, café e carnes, sendo referência em qualidade e produtividade.
-                    </div>
-                </div>
-
-                <div class="data-card">
-                    <div class="data-icon">
-                        <i class="fas fa-seedling"></i>
-                    </div>
-                    <div class="data-number">63 mi ha</div>
-                    <div class="data-label">Área Plantada</div>
-                    <div class="data-description">
-                        Aumento de 400% na produção de grãos desde 1990, com apenas 60% de aumento na área plantada - ganho de eficiência.
-                    </div>
-                </div>
-
-                <div class="data-card">
-                    <div class="data-icon">
-                        <i class="fas fa-microchip"></i>
-                    </div>
-                    <div class="data-number">70%</div>
-                    <div class="data-label">Tecnologia no Campo</div>
-                    <div class="data-description">
-                        Agricultura de precisão, drones, sensores IoT e biotecnologia estão presentes em propriedades de todos os tamanhos.
-                    </div>
-                </div>
-
-                <div class="data-card">
-                    <div class="data-icon">
-                        <i class="fas fa-sun"></i>
-                    </div>
-                    <div class="data-number">30%+</div>
-                    <div class="data-label">Energia Renovável</div>
-                    <div class="data-description">
-                        Painéis solares, biodigestores e biogás são cada vez mais comuns nas propriedades rurais brasileiras.
-                    </div>
-                </div>
-
-                <div class="data-card">
-                    <div class="data-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="data-number">17 mi</div>
-                    <div class="data-label">Empregos Gerados</div>
-                    <div class="data-description">
-                        O agronegócio emprega diretamente milhões de trabalhadores e sustenta economias locais em todo o país.
-                    </div>
-                </div>
-            </div>
-
-            <!-- Grid de Imagens -->
-            <div class="image-grid">
-                <div class="image-item">
-                    <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&q=80" alt="Plantação verde">
-                    <div class="image-overlay">
-                        <strong>Lavoura Moderna</strong>
-                        <p>Tecnologia de ponta</p>
-                    </div>
-                </div>
-                <div class="image-item">
-                    <img src="https://images.unsplash.com/photo-1586771107445-d3ca888129ff?w=400&q=80" alt="Drone agrícola">
-                    <div class="image-overlay">
-                        <strong>Drones</strong>
-                        <p>Mapeamento preciso</p>
-                    </div>
-                </div>
-                <div class="image-item">
-                    <img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400&q=80" alt="Painéis solares">
-                    <div class="image-overlay">
-                        <strong>Energia Solar</strong>
-                        <p>Sustentabilidade</p>
-                    </div>
-                </div>
-                <div class="image-item">
-                    <img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&q=80" alt="Solo fértil">
-                    <div class="image-overlay">
-                        <strong>Solo Saudável</strong>
-                        <p>Conservação</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Calculadora de Impacto Ambiental -->
-    <section id="calculadora" class="calculator-section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Ferramenta Interativa</span>
-                <h2 class="section-title">Calculadora de Impacto Ambiental</h2>
-                <p class="section-subtitle">Calcule a pegada de carbono da sua propriedade rural e descubra como reduzir emissões.</p>
-            </div>
-
-            <div class="calculator-container">
-                <div class="calculator-grid">
-                    <div class="calculator-form">
-                        <div class="form-group">
-                            <label for="atividade">
-                                <i class="fas fa-tractor"></i>
-                                Tipo de Atividade
-                            </label>
-                            <select id="atividade" required>
-                                <option value="">Selecione a atividade</option>
-                                <option value="soja">Cultivo de Soja</option>
-                                <option value="milho">Cultivo de Milho</option>
-                                <option value="cana">Cana-de-Açúcar</option>
-                                <option value="cafe">Café</option>
-                                <option value="algodao">Algodão</option>
-                                <option value="pecuaria">Pecuária de Corte</option>
-                                <option value="pecuaria-leite">Pecuária Leiteira</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="area">
-                                <i class="fas fa-ruler-combined"></i>
-                                Área Total (hectares)
-                            </label>
-                            <input type="number" id="area" placeholder="Ex: 100" min="0" step="0.1" required>
-                            <small>Informe o tamanho total da propriedade</small>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="fertilizantes">
-                                <i class="fas fa-flask"></i>
-                                Fertilizantes (toneladas/ano)
-                            </label>
-                            <input type="number" id="fertilizantes" placeholder="Ex: 50" min="0" step="0.1" required>
-                            <small>Quantidade total de fertilizantes químicos utilizados</small>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="combustivel">
-                                <i class="fas fa-gas-pump"></i>
-                                Combustível (litros/ano)
-                            </label>
-                            <input type="number" id="combustivel" placeholder="Ex: 10000" min="0" step="100" required>
-                            <small>Diesel, gasolina e outros combustíveis</small>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="energia">
-                                <i class="fas fa-bolt"></i>
-                                Energia Elétrica (kWh/mês)
-                            </label>
-                            <input type="number" id="energia" placeholder="Ex: 2000" min="0" step="100" required>
-                            <small>Consumo médio mensal de energia</small>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="agua">
-                                <i class="fas fa-tint"></i>
-                                Uso de Água (m³/ano)
-                            </label>
-                            <input type="number" id="agua" placeholder="Ex: 50000" min="0" step="1000" required>
-                            <small>Volume total de água utilizado na irrigação</small>
-                        </div>
-
-                        <button type="button" class="calculate-btn" onclick="calcularImpacto()">
-                            <i class="fas fa-calculator"></i>
-                            Calcular Emissões
+            
+            <div class="panel-content">
+                <!-- Filtros -->
+                <div class="filters">
+                    <div class="filter-title">Filtrar por Atividade:</div>
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" data-filter="all">
+                            <span class="dot" style="background: #2F2F2F;"></span>
+                            Todas
+                        </button>
+                        <button class="filter-btn" data-filter="soja">
+                            <span class="dot legend-soja"></span>
+                            Soja
+                        </button>
+                        <button class="filter-btn" data-filter="milho">
+                            <span class="dot legend-milho"></span>
+                            Milho
+                        </button>
+                        <button class="filter-btn" data-filter="cafe">
+                            <span class="dot legend-cafe"></span>
+                            Café
+                        </button>
+                        <button class="filter-btn" data-filter="cana">
+                            <span class="dot legend-cana"></span>
+                            Cana
+                        </button>
+                        <button class="filter-btn" data-filter="pecuaria">
+                            <span class="dot legend-pecuaria"></span>
+                            Pecuária
+                        </button>
+                        <button class="filter-btn" data-filter="algodao">
+                            <span class="dot legend-algodao"></span>
+                            Algodão
                         </button>
                     </div>
+                </div>
 
-                    <div class="calculator-result" id="resultado" style="display: none;">
-                        <div class="result-icon">
-                            <i class="fas fa-cloud"></i>
-                        </div>
-                        <div class="result-title">Sua Pegada de Carbono Anual</div>
-                        <div class="result-value" id="valorEmissao">0</div>
-                        <div class="result-unit">toneladas de CO₂e</div>
-                        
-                        <div class="result-comparison">
-                            <p id="comparacao"></p>
-                        </div>
-
-                        <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.2); width: 100%;">
-                            <p style="font-size: 0.9rem; margin-bottom: 0.5rem;"><strong>Dicas para reduzir:</strong></p>
-                            <ul style="text-align: left; font-size: 0.85rem; line-height: 1.8; padding-left: 1.2rem;">
-                                <li>Adote energia solar fotovoltaica</li>
-                                <li>Implemente plantio direto</li>
-                                <li>Use bioinsumos e fertilizantes orgânicos</li>
-                                <li>Invista em ILPF (Integração Lavoura-Pecuária-Floresta)</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="calculator-result" id="resultado-inicial" style="background: linear-gradient(135deg, #e0e0e0, #f0f0f0); color: var(--cinza-escuro);">
-                        <div class="result-icon" style="color: var(--verde-institucional);">
-                            <i class="fas fa-leaf"></i>
-                        </div>
-                        <div class="result-title" style="color: var(--cinza-escuro);">Preencha os dados</div>
-                        <p style="opacity: 0.8; line-height: 1.6;">
-                            Informe os dados da sua propriedade para calcular o impacto ambiental e receber recomendações personalizadas de sustentabilidade.
-                        </p>
-                    </div>
+                <!-- Lista de Fazendas -->
+                <div class="farms-list" id="farmsList">
+                    <!-- Cards serão inseridos via JavaScript -->
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- Gráficos -->
-    <section id="graficos" class="charts-section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Estatísticas</span>
-                <h2 class="section-title">Evolução da Produção</h2>
-                <p class="section-subtitle">Dados que mostram o crescimento sustentável do agronegócio brasileiro nas últimas décadas.</p>
+        <!-- Estatísticas Rápidas -->
+        <div class="quick-stats">
+            <h4><i class="fas fa-chart-bar"></i> Resumo Nacional</h4>
+            <div class="stat-row">
+                <span class="stat-label-map">Total de Fazendas</span>
+                <span class="stat-value-map">15</span>
             </div>
-
-            <div class="charts-grid">
-                <div class="chart-container">
-                    <h3 class="chart-title">Produção de Grãos vs Área Plantada (1990-2025)</h3>
-                    <div class="chart-wrapper">
-                        <canvas id="productionChart"></canvas>
-                    </div>
-                    <p style="text-align: center; margin-top: 1rem; color: var(--cinza-escuro); opacity: 0.8; font-size: 0.9rem;">
-                        * Produção em milhões de toneladas | Área em milhões de hectares
-                    </p>
-                </div>
-
-                <div class="chart-container">
-                    <h3 class="chart-title">Uso de Tecnologias no Campo (%)</h3>
-                    <div class="chart-wrapper">
-                        <canvas id="techChart"></canvas>
-                    </div>
-                </div>
+            <div class="stat-row">
+                <span class="stat-label-map">Área Total</span>
+                <span class="stat-value-map">8.5 mi ha</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label-map">Produção Anual</span>
+                <span class="stat-value-map">45 mi ton</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label-map">Exportação</span>
+                <span class="stat-value-map">US$ 28 bi</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label-map">Empregos</span>
+                <span class="stat-value-map">125 mil</span>
             </div>
         </div>
-    </section>
 
-    <!-- Quiz de Sustentabilidade -->
-    <section id="quiz" class="quiz-section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag" style="background: var(--branco); color: var(--verde-escuro);">Teste seus Conhecimentos</span>
-                <h2 class="section-title">Quiz de Sustentabilidade no Agro</h2>
-                <p class="section-subtitle">Avalie seu conhecimento sobre práticas sustentáveis e tecnologias no agronegócio.</p>
+        <!-- Legenda -->
+        <div class="legend">
+            <h4><i class="fas fa-info-circle"></i> Legenda</h4>
+            <div class="legend-item" onclick="filterByType('soja')">
+                <div class="legend-color legend-soja"></div>
+                <span>Soja</span>
             </div>
-
-            <div class="quiz-container">
-                <div class="quiz-header">
-                    <h3><i class="fas fa-leaf" style="color: var(--verde-institucional); margin-right: 0.5rem;"></i>Quiz da Sustentabilidade</h3>
-                    <p style="color: var(--cinza-escuro); opacity: 0.8;">Responda 5 perguntas sobre sustentabilidade no agronegócio</p>
-                </div>
-
-                <div class="quiz-progress" id="quizProgress">
-                    <div class="progress-dot active"></div>
-                    <div class="progress-dot"></div>
-                    <div class="progress-dot"></div>
-                    <div class="progress-dot"></div>
-                    <div class="progress-dot"></div>
-                </div>
-
-                <div id="quizQuestions">
-                    <!-- Questão 1 -->
-                    <div class="quiz-question active" data-question="1">
-                        <div class="question-text">
-                            <span class="question-number">1</span>
-                            Qual técnica de manejo do solo ajuda a reduzir a erosão e aumenta a matéria orgânica?
-                        </div>
-                        <div class="quiz-options">
-                            <div class="quiz-option" data-value="a" data-correct="true">
-                                <span class="option-letter">A</span>
-                                <span>Plantio Direto</span>
-                            </div>
-                            <div class="quiz-option" data-value="b" data-correct="false">
-                                <span class="option-letter">B</span>
-                                <span>Queimada controlada</span>
-                            </div>
-                            <div class="quiz-option" data-value="c" data-correct="false">
-                                <span class="option-letter">C</span>
-                                <span>Arção intensiva</span>
-                            </div>
-                            <div class="quiz-option" data-value="d" data-correct="false">
-                                <span class="option-letter">D</span>
-                                <span>Monocultura contínua</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Questão 2 -->
-                    <div class="quiz-question" data-question="2">
-                        <div class="question-text">
-                            <span class="question-number">2</span>
-                            O que significa a sigla ILPF?
-                        </div>
-                        <div class="quiz-options">
-                            <div class="quiz-option" data-value="a" data-correct="false">
-                                <span class="option-letter">A</span>
-                                <span>Irrigação Localizada de Precisão Fluvial</span>
-                            </div>
-                            <div class="quiz-option" data-value="b" data-correct="true">
-                                <span class="option-letter">B</span>
-                                <span>Integração Lavoura-Pecuária-Floresta</span>
-                            </div>
-                            <div class="quiz-option" data-value="c" data-correct="false">
-                                <span class="option-letter">C</span>
-                                <span>Indicador de Lucratividade da Produção Familiar</span>
-                            </div>
-                            <div class="quiz-option" data-value="d" data-correct="false">
-                                <span class="option-letter">D</span>
-                                <span>Insumos Líquidos para Produção Florestal</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Questão 3 -->
-                    <div class="quiz-question" data-question="3">
-                        <div class="question-text">
-                            <span class="question-number">3</span>
-                            Qual é a principal vantagem do uso de drones na agricultura?
-                        </div>
-                        <div class="quiz-options">
-                            <div class="quiz-option" data-value="a" data-correct="false">
-                                <span class="option-letter">A</span>
-                                <span>Substituir totalmente o trabalho humano</span>
-                            </div>
-                            <div class="quiz-option" data-value="b" data-correct="false">
-                                <span class="option-letter">B</span>
-                                <span>Aumentar o uso de agrotóxicos</span>
-                            </div>
-                            <div class="quiz-option" data-value="c" data-correct="true">
-                                <span class="option-letter">C</span>
-                                <span>Monitoramento preciso e aplicação localizada de insumos</span>
-                            </div>
-                            <div class="quiz-option" data-value="d" data-correct="false">
-                                <span class="option-letter">D</span>
-                                <span>Reduzir a qualidade da produção</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Questão 4 -->
-                    <div class="quiz-question" data-question="4">
-                        <div class="question-text">
-                            <span class="question-number">4</span>
-                            Qual fonte de energia renovável é mais comum em propriedades rurais brasileiras?
-                        </div>
-                        <div class="quiz-options">
-                            <div class="quiz-option" data-value="a" data-correct="false">
-                                <span class="option-letter">A</span>
-                                <span>Energia eólica</span>
-                            </div>
-                            <div class="quiz-option" data-value="b" data-correct="true">
-                                <span class="option-letter">B</span>
-                                <span>Energia solar fotovoltaica e biomassa</span>
-                            </div>
-                            <div class="quiz-option" data-value="c" data-correct="false">
-                                <span class="option-letter">C</span>
-                                <span>Energia nuclear</span>
-                            </div>
-                            <div class="quiz-option" data-value="d" data-correct="false">
-                                <span class="option-letter">D</span>
-                                <span>Energia das marés</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Questão 5 -->
-                    <div class="quiz-question" data-question="5">
-                        <div class="question-text">
-                            <span class="question-number">5</span>
-                            O que é agricultura de precisão?
-                        </div>
-                        <div class="quiz-options">
-                            <div class="quiz-option" data-value="a" data-correct="false">
-                                <span class="option-letter">A</span>
-                                <span>Cultivo apenas de produtos orgânicos</span>
-                            </div>
-                            <div class="quiz-option" data-value="b" data-correct="true">
-                                <span class="option-letter">B</span>
-                                <span>Uso de tecnologia para otimizar insumos e aumentar eficiência</span>
-                            </div>
-                            <div class="quiz-option" data-value="c" data-correct="false">
-                                <span class="option-letter">C</span>
-                                <span>Plantio manual de sementes selecionadas</span>
-                            </div>
-                            <div class="quiz-option" data-value="d" data-correct="false">
-                                <span class="option-letter">D</span>
-                                <span>Cultivo em pequenas áreas urbanas</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="quiz-navigation">
-                    <button class="quiz-btn quiz-btn-prev" id="prevBtn" onclick="prevQuestion()" disabled>
-                        <i class="fas fa-arrow-left"></i> Anterior
-                    </button>
-                    <button class="quiz-btn quiz-btn-next" id="nextBtn" onclick="nextQuestion()" disabled>
-                        Próxima <i class="fas fa-arrow-right"></i>
-                    </button>
-                    <button class="quiz-btn quiz-btn-finish" id="finishBtn" onclick="finishQuiz()" style="display: none;">
-                        Ver Resultado <i class="fas fa-trophy"></i>
-                    </button>
-                </div>
-
-                <div class="quiz-result" id="quizResult">
-                    <div class="result-icon-large" id="resultIcon">🏆</div>
-                    <div class="result-title-quiz" id="resultTitle">Parabéns!</div>
-                    <div class="result-score" id="resultScore">0/5</div>
-                    <div class="result-message" id="resultMessage"></div>
-                    <div class="result-actions">
-                        <button class="btn btn-primary" onclick="restartQuiz()">
-                            <i class="fas fa-redo"></i> Refazer Quiz
-                        </button>
-                        <a href="#tecnologias" class="btn btn-secondary">
-                            <i class="fas fa-book"></i> Aprender Mais
-                        </a>
-                    </div>
-                </div>
+            <div class="legend-item" onclick="filterByType('milho')">
+                <div class="legend-color legend-milho"></div>
+                <span>Milho</span>
+            </div>
+            <div class="legend-item" onclick="filterByType('cafe')">
+                <div class="legend-color legend-cafe"></div>
+                <span>Café</span>
+            </div>
+            <div class="legend-item" onclick="filterByType('cana')">
+                <div class="legend-color legend-cana"></div>
+                <span>Cana-de-Açúcar</span>
+            </div>
+            <div class="legend-item" onclick="filterByType('pecuaria')">
+                <div class="legend-color legend-pecuaria"></div>
+                <span>Pecuária</span>
+            </div>
+            <div class="legend-item" onclick="filterByType('algodao')">
+                <div class="legend-color legend-algodao"></div>
+                <span>Algodão</span>
             </div>
         </div>
-    </section>
-
-    <!-- Seção de Vídeo -->
-    <section class="video-section" id="video">
-        <div class="container">
-            <h2 class="video-title">Conheça a Revolução do Agro Brasileiro</h2>
-            <div class="video-container">
-                <iframe 
-                    src="https://www.youtube.com/embed/FjS6b31O0Qs" 
-                    title="Agro Forte - Futuro Sustentável"
-                    frameborder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                    allowfullscreen>
-                </iframe>
-            </div>
-        </div>
-    </section>
-
-    <!-- Tecnologias -->
-    <section id="tecnologias">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Inovação</span>
-                <h2 class="section-title">Tecnologias no Campo</h2>
-                <p class="section-subtitle">Do plantio à colheita, a tecnologia transforma a agricultura em uma atividade de precisão e sustentabilidade.</p>
-            </div>
-
-            <div class="tech-grid">
-                <div class="tech-card">
-                    <div class="tech-image">
-                        <img src="https://images.unsplash.com/photo-1586771107445-d3ca888129ff?w=600&q=80" alt="Agricultura de Precisão">
-                        <i class="fas fa-satellite tech-icon"></i>
-                    </div>
-                    <div class="tech-content">
-                        <h3>Agricultura de Precisão</h3>
-                        <p>Uso de GPS, inteligência artificial e sensores para otimizar o uso de insumos, reduzir custos e minimizar impactos ambientais.</p>
-                        <ul class="tech-list">
-                            <li><i class="fas fa-check"></i> Mapeamento detalhado do solo</li>
-                            <li><i class="fas fa-check"></i> Aplicação taxa variável</li>
-                            <li><i class="fas fa-check"></i> Monitoramento em tempo real</li>
-                            <li><i class="fas fa-check"></i> Redução de 30% em insumos</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="tech-card">
-                    <div class="tech-image">
-                        <img src="https://images.unsplash.com/photo-1527011046414-4781f1f94f8c?w=600&q=80" alt="Drones Agrícolas">
-                        <i class="fas fa-helicopter tech-icon"></i>
-                    </div>
-                    <div class="tech-content">
-                        <h3>Drones e Sensoriamento</h3>
-                        <p>Tecnologia aérea para monitoramento de lavouras, pulverização localizada e análise de saúde das plantas.</p>
-                        <ul class="tech-list">
-                            <li><i class="fas fa-check"></i> Imagens multiespectrais</li>
-                            <li><i class="fas fa-check"></i> Detecção precoce de pragas</li>
-                            <li><i class="fas fa-check"></i> Pulverização precisa</li>
-                            <li><i class="fas fa-check"></i> Cobertura de grandes áreas</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="tech-card">
-                    <div class="tech-image">
-                        <img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600&q=80" alt="Energia Renovável">
-                        <i class="fas fa-solar-panel tech-icon"></i>
-                    </div>
-                    <div class="tech-content">
-                        <h3>Energia Renovável</h3>
-                        <p>Propriedades rurais gerando sua própria energia limpa através de painéis solares e biodigestores.</p>
-                        <ul class="tech-list">
-                            <li><i class="fas fa-check"></i> Painéis fotovoltaicos</li>
-                            <li><i class="fas fa-check"></i> Biodigestores de dejetos</li>
-                            <li><i class="fas fa-check"></i> Biogás e biofertilizantes</li>
-                            <li><i class="fas fa-check"></i> Redução de custos energéticos</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="tech-card">
-                    <div class="tech-image">
-                        <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=600&q=80" alt="Irrigação Inteligente">
-                        <i class="fas fa-tint tech-icon"></i>
-                    </div>
-                    <div class="tech-content">
-                        <h3>Irrigação Inteligente</h3>
-                        <p>Sistemas automatizados que monitoram a umidade do solo e aplicam água apenas quando e onde necessário.</p>
-                        <ul class="tech-list">
-                            <li><i class="fas fa-check"></i> Sensores de umidade</li>
-                            <li><i class="fas fa-check"></i> Automação total</li>
-                            <li><i class="fas fa-check"></i> Economia de 40% de água</li>
-                            <li><i class="fas fa-check"></i> Aumento de produtividade</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="tech-card">
-                    <div class="tech-image">
-                        <img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&q=80" alt="Plantio Direto">
-                        <i class="fas fa-leaf tech-icon"></i>
-                    </div>
-                    <div class="tech-content">
-                        <h3>Plantio Direto</h3>
-                        <p>Técnica de conservação do solo que mantém a palhada na superfície, reduzindo erosão e melhorando a fertilidade.</p>
-                        <ul class="tech-list">
-                            <li><i class="fas fa-check"></i> Proteção do solo</li>
-                            <li><i class="fas fa-check"></i> Sequestro de carbono</li>
-                            <li><i class="fas fa-check"></i> Menor erosão</li>
-                            <li><i class="fas fa-check"></i> Melhoria da matéria orgânica</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="tech-card">
-                    <div class="tech-image">
-                        <img src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=600&q=80" alt="Biotecnologia">
-                        <i class="fas fa-dna tech-icon"></i>
-                    </div>
-                    <div class="tech-content">
-                        <h3>Biotecnologia</h3>
-                        <p>Desenvolvimento de sementes melhoradas geneticamente para resistência a pragas, doenças e condições climáticas.</p>
-                        <ul class="tech-list">
-                            <li><i class="fas fa-check"></i> Sementes resistentes</li>
-                            <li><i class="fas fa-check"></i> Menor uso de defensivos</li>
-                            <li><i class="fas fa-check"></i> Adaptação climática</li>
-                            <li><i class="fas fa-check"></i> Maior produtividade</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Sustentabilidade e Comparação -->
-    <section id="sustentabilidade" class="comparison-section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Preservação</span>
-                <h2 class="section-title">Solo: Antes e Depois</h2>
-                <p class="section-subtitle">Práticas sustentáveis transformam a qualidade do solo e aumentam a produtividade de forma responsável.</p>
-            </div>
-
-            <div class="comparison-grid">
-                <div class="comparison-image">
-                    <img src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=800&q=80" alt="Solo degradado">
-                    <span class="comparison-label">Solo Degradado</span>
-                </div>
-                <div class="comparison-content">
-                    <h3>Recuperação de Áreas Degradadas</h3>
-                    <p>O Brasil possui tecnologia de ponta para recuperar solos degradados, transformando áreas improdutivas em lavouras férteis e sustentáveis.</p>
-                    <p>Através de técnicas como calagem, gessagem, plantio direto e rotação de culturas, é possível recuperar a fertilidade do solo em poucos anos.</p>
-                    <ul class="benefits-list">
-                        <li>
-                            <i class="fas fa-check-circle"></i>
-                            <div>
-                                <strong>Aumento da Matéria Orgânica</strong>
-                                <p>Melhoria da estrutura e fertilidade do solo</p>
-                            </div>
-                        </li>
-                        <li>
-                            <i class="fas fa-check-circle"></i>
-                            <div>
-                                <strong>Retenção de Água</strong>
-                                <p>Redução da necessidade de irrigação em até 40%</p>
-                            </div>
-                        </li>
-                        <li>
-                            <i class="fas fa-check-circle"></i>
-                            <div>
-                                <strong>Sequestro de Carbono</strong>
-                                <p>Contribuição para mitigação das mudanças climáticas</p>
-                            </div>
-                        </li>
-                        <li>
-                            <i class="fas fa-check-circle"></i>
-                            <div>
-                                <strong>Biodiversidade</strong>
-                                <p>Recuperação da vida microbiana do solo</p>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="comparison-grid" style="margin-top: 6rem;">
-                <div class="comparison-content">
-                    <h3>Integração Lavoura-Pecuária-Floresta (ILPF)</h3>
-                    <p>Sistema que combina diferentes atividades agrícolas na mesma área, promovendo sinergia entre produção e preservação.</p>
-                    <p>A ILPF permite diversificação de renda, melhoria do solo, bem-estar animal e conservação ambiental simultaneamente.</p>
-                    <ul class="benefits-list">
-                        <li>
-                            <i class="fas fa-check-circle"></i>
-                            <div>
-                                <strong>Diversificação Produtiva</strong>
-                                <p>Múltiplas fontes de renda na mesma propriedade</p>
-                            </div>
-                        </li>
-                        <li>
-                            <i class="fas fa-check-circle"></i>
-                            <div>
-                                <strong>Ciclagem de Nutrientes</strong>
-                                <p>Dejetos animais fertilizam naturalmente o solo</p>
-                            </div>
-                        </li>
-                        <li>
-                            <i class="fas fa-check-circle"></i>
-                            <div>
-                                <strong>Conforto Animal</strong>
-                                <p>Sombreamento natural melhora produtividade</p>
-                            </div>
-                        </li>
-                        <li>
-                            <i class="fas fa-check-circle"></i>
-                            <div>
-                                <strong>Sequestro de Carbono</strong>
-                                <p>Árvores capturam CO2 da atmosfera</p>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                <div class="comparison-image">
-                    <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=80" alt="Sistema ILPF">
-                    <span class="comparison-label">Sistema ILPF</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Parceiros -->
-    <section class="partners-section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Instituições</span>
-                <h2 class="section-title">Parceiros e Apoiadores</h2>
-                <p class="section-subtitle">Instituições que contribuem para o desenvolvimento sustentável do agronegócio brasileiro.</p>
-            </div>
-            <div class="partners-grid">
-                <div style="text-align: center; opacity: 0.7;">
-                    <i class="fas fa-university" style="font-size: 4rem; color: var(--verde-institucional); margin-bottom: 1rem;"></i>
-                    <h4 style="color: var(--verde-escuro);">Embrapa</h4>
-                    <p style="font-size: 0.9rem;">Pesquisa Agropecuária</p>
-                </div>
-                <div style="text-align: center; opacity: 0.7;">
-                    <i class="fas fa-landmark" style="font-size: 4rem; color: var(--azul-escuro); margin-bottom: 1rem;"></i>
-                    <h4 style="color: var(--verde-escuro);">Ministério da Agricultura</h4>
-                    <p style="font-size: 0.9rem;">MAPA</p>
-                </div>
-                <div style="text-align: center; opacity: 0.7;">
-                    <i class="fas fa-seedling" style="font-size: 4rem; color: var(--verde-institucional); margin-bottom: 1rem;"></i>
-                    <h4 style="color: var(--verde-escuro);">SENAR</h4>
-                    <p style="font-size: 0.9rem;">Educação Rural</p>
-                </div>
-                <div style="text-align: center; opacity: 0.7;">
-                    <i class="fas fa-globe" style="font-size: 4rem; color: var(--azul-escuro); margin-bottom: 1rem;"></i>
-                    <h4 style="color: var(--verde-escuro);">FAO Brasil</h4>
-                    <p style="font-size: 0.9rem;">Agricultura Sustentável</p>
-                </div>
-                <div style="text-align: center; opacity: 0.7;">
-                    <i class="fas fa-flask" style="font-size: 4rem; color: var(--verde-institucional); margin-bottom: 1rem;"></i>
-                    <h4 style="color: var(--verde-escuro);">IAC</h4>
-                    <p style="font-size: 0.9rem;">Instituto Agronômico</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contato -->
-    <section id="contato" class="contact-section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag" style="background: var(--branco); color: var(--verde-escuro);">Contato</span>
-                <h2 class="section-title">Fale Conosco</h2>
-                <p class="section-subtitle">Envie sua mensagem, dúvida ou sugestão sobre sustentabilidade no agronegócio.</p>
-            </div>
-
-            <div class="contact-grid">
-                <form class="contact-form" onsubmit="enviarFormulario(event)">
-                    <div class="form-group-contact">
-                        <label for="nome">Nome Completo</label>
-                        <input type="text" id="nome" name="nome" required placeholder="Digite seu nome">
-                    </div>
-                    <div class="form-group-contact">
-                        <label for="email-contato">E-mail</label>
-                        <input type="email" id="email-contato" name="email" required placeholder="seu@email.com">
-                    </div>
-                    <div class="form-group-contact">
-                        <label for="assunto">Assunto</label>
-                        <select id="assunto" name="assunto" required>
-                            <option value="">Selecione um assunto</option>
-                            <option value="duvida">Dúvida sobre tecnologias</option>
-                            <option value="sustentabilidade">Práticas sustentáveis</option>
-                            <option value="parceria">Parceria institucional</option>
-                            <option value="imprensa">Imprensa</option>
-                            <option value="outro">Outro</option>
-                        </select>
-                    </div>
-                    <div class="form-group-contact">
-                        <label for="mensagem">Mensagem</label>
-                        <textarea id="mensagem" name="mensagem" rows="5" required placeholder="Digite sua mensagem..."></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
-                        <i class="fas fa-paper-plane"></i>
-                        Enviar Mensagem
-                    </button>
-                </form>
-
-                <div class="contact-info">
-                    <div class="info-card">
-                        <div class="info-icon">
-                            <i class="fas fa-map-marker-alt"></i>
-                        </div>
-                        <div class="info-content">
-                            <h4>Localização</h4>
-                            <p>Brasília, DF - Brasil<br>Centro de Inovação do Agronegócio</p>
-                        </div>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-icon">
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                        <div class="info-content">
-                            <h4>E-mail</h4>
-                            <p>contato@agroforte.com.br<br>imprensa@agroforte.com.br</p>
-                        </div>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-icon">
-                            <i class="fas fa-phone"></i>
-                        </div>
-                        <div class="info-content">
-                            <h4>Telefone</h4>
-                            <p>(61) 3333-4444<br>(61) 99999-8888 (WhatsApp)</p>
-                        </div>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-icon">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                        <div class="info-content">
-                            <h4>Horário de Atendimento</h4>
-                            <p>Segunda a Sexta: 8h às 18h<br>Sábado: 8h às 12h</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>Sobre o Agro Forte</h4>
-                <p style="opacity: 0.8; line-height: 1.8;">
-                    Plataforma dedicada a promover o agronegócio sustentável brasileiro, destacando tecnologias, práticas conservacionistas e inovação no campo.
-                </p>
-            </div>
-            <div class="footer-section">
-                <h4>Links Rápidos</h4>
-                <ul>
-                    <li><a href="#inicio">Início</a></li>
-                    <li><a href="#dados">Dados e Estatísticas</a></li>
-                    <li><a href="#tecnologias">Tecnologias</a></li>
-                    <li><a href="#calculadora">Calculadora</a></li>
-                    <li><a href="#quiz">Quiz</a></li>
-                    <li><a href="#contato">Contato</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Recursos</h4>
-                <ul>
-                    <li><a href="#">Publicações Técnicas</a></li>
-                    <li><a href="#">Cursos Online</a></li>
-                    <li><a href="#">Webinars</a></li>
-                    <li><a href="#">Biblioteca Digital</a></li>
-                    <li><a href="#">FAQ</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Redes Sociais</h4>
-                <ul>
-                    <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
-                    <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
-                    <li><a href="#"><i class="fab fa-linkedin"></i> LinkedIn</a></li>
-                    <li><a href="#"><i class="fab fa-youtube"></i> YouTube</a></li>
-                    <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 Agro Forte - Todos os direitos reservados | Desenvolvido com <i class="fas fa-heart" style="color: var(--verde-institucional);"></i> para o agronegócio sustentável</p>
-        </div>
-    </footer>
+    </div>
 
     <script>
-        // Variáveis do Quiz
-        let currentQuestion = 1;
-        const totalQuestions = 5;
-        let answers = {};
-        let score = 0;
+        // Dados das Fazendas
+        const fazendas = [
+            {
+                id: 1,
+                nome: "Fazenda São Mateus",
+                estado: "MT",
+                cidade: "Sorriso",
+                lat: -12.5459,
+                lng: -55.7167,
+                tipo: "soja",
+                area: "45.000 ha",
+                producao: "180.000 ton/ano",
+                produtos: ["Soja", "Milho", "Algodão"],
+                descricao: "Uma das maiores propriedades do Mato Grosso, referência em agricultura de precisão e sustentabilidade. Utiliza tecnologia de ponta em todas as etapas da produção."
+            },
+            {
+                id: 2,
+                nome: "Fazenda Colorado",
+                estado: "BA",
+                cidade: "Luís Eduardo Magalhães",
+                lat: -12.0994,
+                lng: -45.7969,
+                tipo: "soja",
+                area: "38.000 ha",
+                producao: "152.000 ton/ano",
+                produtos: ["Soja", "Milho", "Algodão"],
+                descricao: "Localizada no oeste baiano, é destaque em produtividade e manejo sustentável. Possui sistema próprio de armazenamento e beneficiamento."
+            },
+            {
+                id: 3,
+                nome: "Usina Santa Elisa",
+                estado: "SP",
+                cidade: "Ribeirão Preto",
+                lat: -21.1775,
+                lng: -47.8103,
+                tipo: "cana",
+                area: "52.000 ha",
+                producao: "3.2 mi ton/ano",
+                produtos: ["Cana-de-Açúcar", "Etanol", "Açúcar", "Energia"],
+                descricao: "Maior usina da região de Ribeirão Preto, produz etanol, açúcar e energia elétrica a partir do bagaço de cana. Referência em bioenergia."
+            },
+            {
+                id: 4,
+                nome: "Fazenda Três Irmãos",
+                estado: "PR",
+                cidade: "Londrina",
+                lat: -23.3045,
+                lng: -51.1696,
+                tipo: "soja",
+                area: "28.000 ha",
+                producao: "98.000 ton/ano",
+                produtos: ["Soja", "Milho", "Trigo"],
+                descricao: "Tradicional propriedade paranaense com mais de 50 anos de história. Pioneira em plantio direto na região."
+            },
+            {
+                id: 5,
+                nome: "Fazenda Santa Rita",
+                estado: "MG",
+                cidade: "Três Corações",
+                lat: -21.6969,
+                lng: -44.8394,
+                tipo: "cafe",
+                area: "12.000 ha",
+                producao: "420.000 sacas/ano",
+                produtos: ["Café Arábica", "Café Especial"],
+                descricao: "Produtora de cafés especiais no sul de Minas. Reconhecida internacionalmente pela qualidade dos grãos e processos sustentáveis."
+            },
+            {
+                id: 6,
+                nome: "Fazenda Boa Esperança",
+                estado: "MS",
+                cidade: "Campo Grande",
+                lat: -20.4697,
+                lng: -54.6201,
+                tipo: "pecuaria",
+                area: "85.000 ha",
+                producao: "45.000 cabeças",
+                produtos: ["Gado de Corte", "Soja", "Milho"],
+                descricao: "Grande propriedade de pecuária de corte com sistema de integração lavoura-pecuária-floresta (ILPF). Referência em bem-estar animal."
+            },
+            {
+                id: 7,
+                nome: "Fazenda Progresso",
+                estado: "RS",
+                cidade: "Santa Maria",
+                lat: -29.6842,
+                lng: -53.8069,
+                tipo: "soja",
+                area: "22.000 ha",
+                producao: "78.000 ton/ano",
+                produtos: ["Soja", "Arroz", "Trigo"],
+                descricao: "Propriedade gaúcha diversificada, com destaque para a produção de arroz irrigado e soja de alta qualidade."
+            },
+            {
+                id: 8,
+                nome: "Fazenda São Francisco",
+                estado: "MA",
+                cidade: "Balsas",
+                lat: -7.5333,
+                lng: -46.0333,
+                tipo: "soja",
+                area: "35.000 ha",
+                producao: "125.000 ton/ano",
+                produtos: ["Soja", "Milho", "Algodão"],
+                descricao: "Localizada na região do MATOPIBA, representa a expansão agrícola sustentável no Maranhão. Alta tecnologia e produtividade."
+            },
+            {
+                id: 9,
+                nome: "Fazenda Algodoeira do Oeste",
+                estado: "BA",
+                cidade: "Formosa do Rio Preto",
+                lat: -11.0167,
+                lng: -46.1833,
+                tipo: "algodao",
+                area: "32.000 ha",
+                producao: "95.000 ton/ano",
+                produtos: ["Algodão", "Soja", "Milho"],
+                descricao: "Maior produtora de algodão da Bahia, com beneficiamento próprio e certificação internacional. Exporta para diversos países."
+            },
+            {
+                id: 10,
+                nome: "Fazenda Goiás Verde",
+                estado: "GO",
+                cidade: "Goiânia",
+                lat: -16.6869,
+                lng: -49.2648,
+                tipo: "soja",
+                area: "30.000 ha",
+                producao: "110.000 ton/ano",
+                produtos: ["Soja", "Milho", "Sorgo"],
+                descricao: "Propriedade goiana com forte integração agroindustrial. Produz grãos e fornece para frigoríficos da região."
+            },
+            {
+                id: 11,
+                nome: "Fazenda Vale do Paraná",
+                estado: "PR",
+                cidade: "Cascavel",
+                lat: -25.0617,
+                lng: -53.4553,
+                tipo: "milho",
+                area: "18.000 ha",
+                producao: "125.000 ton/ano",
+                produtos: ["Milho", "Soja", "Aveia"],
+                descricao: "Especializada em produção de milho para indústria de rações e exportação. Infraestrutura moderna de secagem e armazenamento."
+            },
+            {
+                id: 12,
+                nome: "Fazenda Café do Cerrado",
+                estado: "MG",
+                cidade: "Patrocínio",
+                lat: -18.9458,
+                lng: -46.9969,
+                tipo: "cafe",
+                area: "8.500 ha",
+                producao: "280.000 sacas/ano",
+                produtos: ["Café Arábica", "Café Orgânico"],
+                descricao: "Localizada no Cerrado Mineiro, região de denominação de origem. Cafés premiados em concursos internacionais."
+            },
+            {
+                id: 13,
+                nome: "Fazenda Pecuária Pantanal",
+                estado: "MT",
+                cidade: "Cáceres",
+                lat: -16.0739,
+                lng: -57.6869,
+                tipo: "pecuaria",
+                area: "120.000 ha",
+                producao: "65.000 cabeças",
+                produtos: ["Gado de Corte", "Gado de Leite"],
+                descricao: "Uma das maiores propriedades do Pantanal mato-grossense. Criação extensiva com manejo sustentável e preservação ambiental."
+            },
+            {
+                id: 14,
+                nome: "Usina Cana Verde",
+                estado: "SP",
+                cidade: "Piracicaba",
+                lat: -22.7253,
+                lng: -47.6492,
+                tipo: "cana",
+                area: "42.000 ha",
+                producao: "2.8 mi ton/ano",
+                produtos: ["Cana-de-Açúcar", "Etanol", "Bioeletricidade"],
+                descricao: "Usina moderna com foco em sustentabilidade e economia circular. Produz etanol, açúcar e energia renovável."
+            },
+            {
+                id: 15,
+                nome: "Fazenda Agropecuária Central",
+                estado: "GO",
+                cidade: "Rio Verde",
+                lat: -17.7969,
+                lng: -50.9169,
+                tipo: "pecuaria",
+                area: "55.000 ha",
+                producao: "38.000 cabeças",
+                produtos: ["Gado de Corte", "Soja", "Milho", "Sorgo"],
+                descricao: "Propriedade diversificada com integração lavoura-pecuária. Referência em produção de grãos e carne de qualidade."
+            }
+        ];
 
-        // Inicializar Gráficos
-        document.addEventListener('DOMContentLoaded', function() {
-            initCharts();
-        });
+        // Inicialização do Mapa
+        let map;
+        let markers = {};
+        let currentFilter = 'all';
 
-        function initCharts() {
-            // Gráfico de Produção vs Área
-            const prodCtx = document.getElementById('productionChart').getContext('2d');
-            new Chart(prodCtx, {
-                type: 'line',
-                data: {
-                    labels: ['1990', '1995', '2000', '2005', '2010', '2015', '2020', '2025'],
-                    datasets: [{
-                        label: 'Produção (milhões ton)',
-                        data: [60, 72, 90, 115, 150, 200, 250, 300],
-                        borderColor: '#2E7D5C',
-                        backgroundColor: 'rgba(46, 125, 92, 0.1)',
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.4,
-                        pointRadius: 6,
-                        pointBackgroundColor: '#2E7D5C',
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2
-                    }, {
-                        label: 'Área Plantada (milhões ha)',
-                        data: [35, 38, 40, 43, 48, 52, 55, 60],
-                        borderColor: '#1A4A7A',
-                        backgroundColor: 'rgba(26, 74, 122, 0.1)',
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.4,
-                        pointRadius: 6,
-                        pointBackgroundColor: '#1A4A7A',
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                font: {
-                                    family: 'Inter',
-                                    size: 12
-                                },
-                                usePointStyle: true,
-                                padding: 20
-                            }
-                        },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false,
-                            backgroundColor: 'rgba(10, 61, 43, 0.9)',
-                            titleFont: { family: 'Inter', size: 14 },
-                            bodyFont: { family: 'Inter', size: 13 },
-                            padding: 12,
-                            cornerRadius: 8
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(0,0,0,0.05)'
-                            },
-                            ticks: {
-                                font: { family: 'Inter', size: 11 }
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                font: { family: 'Inter', size: 11 }
-                            }
-                        }
-                    },
-                    interaction: {
-                        mode: 'nearest',
-                        axis: 'x',
-                        intersect: false
-                    }
-                }
+        function initMap() {
+            map = L.map('fazendasMap', {
+                center: [-14.235, -51.9253],
+                zoom: 4,
+                minZoom: 3,
+                maxZoom: 10
             });
 
-            // Gráfico de Tecnologias
-            const techCtx = document.getElementById('techChart').getContext('2d');
-            new Chart(techCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Agricultura de Precisão', 'Drones/Sensoriamento', 'Energia Renovável', 'Plantio Direto', 'ILPF'],
-                    datasets: [{
-                        label: 'Adoção (%)',
-                        data: [68, 45, 32, 85, 28],
-                        backgroundColor: [
-                            'rgba(46, 125, 92, 0.8)',
-                            'rgba(26, 74, 122, 0.8)',
-                            'rgba(124, 179, 66, 0.8)',
-                            'rgba(10, 61, 43, 0.8)',
-                            'rgba(30, 58, 47, 0.8)'
-                        ],
-                        borderColor: [
-                            '#2E7D5C',
-                            '#1A4A7A',
-                            '#7CB342',
-                            '#0A3D2B',
-                            '#1E3A2F'
-                        ],
-                        borderWidth: 2,
-                        borderRadius: 8
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            backgroundColor: 'rgba(10, 61, 43, 0.9)',
-                            titleFont: { family: 'Inter', size: 14 },
-                            bodyFont: { family: 'Inter', size: 13 },
-                            padding: 12,
-                            cornerRadius: 8,
-                            callbacks: {
-                                label: function(context) {
-                                    return context.parsed.y + '% de adoção';
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            grid: {
-                                color: 'rgba(0,0,0,0.05)'
-                            },
-                            ticks: {
-                                font: { family: 'Inter', size: 11 },
-                                callback: function(value) {
-                                    return value + '%';
-                                }
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                font: { family: 'Inter', size: 10 },
-                                maxRotation: 45,
-                                minRotation: 45
-                            }
-                        }
-                    }
-                }
+            // Camada do OpenStreetMap
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Adicionar marcadores
+            fazendas.forEach(fazenda => {
+                addMarker(fazenda);
             });
+
+            // Ajustar zoom
+            const group = new L.featureGroup(Object.values(markers));
+            map.fitBounds(group.getBounds().pad(0.1));
+
+            // Criar lista de fazendas
+            createFarmsList();
         }
 
-        // Função de cálculo de impacto ambiental
-        function calcularImpacto() {
-            const atividade = document.getElementById('atividade').value;
-            const area = parseFloat(document.getElementById('area').value) || 0;
-            const fertilizantes = parseFloat(document.getElementById('fertilizantes').value) || 0;
-            const combustivel = parseFloat(document.getElementById('combustivel').value) || 0;
-            const energia = parseFloat(document.getElementById('energia').value) || 0;
-            const agua = parseFloat(document.getElementById('agua').value) || 0;
-
-            if (!atividade || area === 0) {
-                alert('Por favor, preencha pelo menos o tipo de atividade e a área.');
-                return;
-            }
-
-            // Fatores de emissão (kg CO2e por unidade)
-            const fatores = {
-                fertilizantes: 3.6, // por tonelada
-                combustivel: 2.7,   // por litro (diesel)
-                energia: 0.08,      // por kWh (média Brasil)
-                agua: 0.0003        // por m³ (bombeamento e tratamento)
+        function addMarker(fazenda) {
+            const colors = {
+                soja: '#2E7D5C',
+                milho: '#1A4A7A',
+                cafe: '#8B4513',
+                cana: '#228B22',
+                pecuaria: '#DC143C',
+                algodao: '#DAA520'
             };
 
-            // Cálculo das emissões
-            const emissaoFertilizantes = fertilizantes * fatores.fertilizantes;
-            const emissaoCombustivel = combustivel * fatores.combustivel;
-            const emissaoEnergia = (energia * 12) * fatores.energia; // anual
-            const emissaoAgua = agua * fatores.agua;
+            const color = colors[fazenda.tipo] || '#2E7D5C';
 
-            // Fator específico por atividade
-            const fatoresAtividade = {
-                soja: 0.5,
-                milho: 0.6,
-                cana: 0.4,
-                cafe: 0.7,
-                algodao: 0.8,
-                pecuaria: 1.2,
-                'pecuaria-leite': 1.0
-            };
+            const icon = L.divIcon({
+                className: 'custom-marker',
+                html: `<div style="
+                    background-color: ${color};
+                    width: 35px;
+                    height: 35px;
+                    border-radius: 50%;
+                    border: 3px solid white;
+                    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-weight: bold;
+                    font-size: 11px;
+                    cursor: pointer;
+                ">${fazenda.estado}</div>`,
+                iconSize: [35, 35],
+                iconAnchor: [17, 17]
+            });
 
-            const emissaoAtividade = area * (fatoresAtividade[atividade] || 0.5);
-
-            const totalEmissao = emissaoFertilizantes + emissaoCombustivel + emissaoEnergia + emissaoAgua + emissaoAtividade;
-
-            // Exibir resultado
-            document.getElementById('valorEmissao').textContent = totalEmissao.toFixed(1);
-            
-            // Comparação
-            const carrosEquivalentes = Math.floor(totalEmissao / 2.3); // 2.3 ton CO2/carro/ano
-            const arvoresNecessarias = Math.ceil(totalEmissao / 0.02); // 20 kg CO2/árvore/ano
-            
-            let textoComparacao = `
-                <strong>Isso equivale a:</strong><br>
-                • ${carrosEquivalentes} carros circulando por um ano<br>
-                • ${arvoresNecessarias} árvores necessárias para compensar<br>
-                • ${(totalEmissao / area).toFixed(2)} ton CO₂e por hectare
+            const popupContent = `
+                <div class="popup-header">
+                    <h3>${fazenda.nome}</h3>
+                    <span class="state-badge">${fazenda.estado} - ${fazenda.cidade}</span>
+                </div>
+                <div class="popup-body">
+                    <p class="popup-description">${fazenda.descricao}</p>
+                    <div class="popup-info-grid">
+                        <div class="popup-info-item">
+                            <div class="popup-info-label">Área Total</div>
+                            <div class="popup-info-value">${fazenda.area}</div>
+                        </div>
+                        <div class="popup-info-item">
+                            <div class="popup-info-label">Produção Anual</div>
+                            <div class="popup-info-value">${fazenda.producao}</div>
+                        </div>
+                    </div>
+                    <div class="popup-products">
+                        ${fazenda.produtos.map(p => `<span class="popup-product-tag">${p}</span>`).join('')}
+                    </div>
+                </div>
             `;
-            
-            document.getElementById('comparacao').innerHTML = textoComparacao;
-            
-            // Mostrar resultado
-            document.getElementById('resultado').style.display = 'flex';
-            document.getElementById('resultado-inicial').style.display = 'none';
-            
-            // Scroll suave até o resultado
-            document.getElementById('resultado').scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
 
-        // Funções do Quiz
-        function initQuiz() {
-            document.querySelectorAll('.quiz-option').forEach(option => {
-                option.addEventListener('click', function() {
-                    const questionDiv = this.closest('.quiz-question');
-                    const questionNum = questionDiv.dataset.question;
-                    
-                    // Remove seleção anterior
-                    questionDiv.querySelectorAll('.quiz-option').forEach(opt => {
-                        opt.classList.remove('selected');
-                    });
-                    
-                    // Adiciona seleção atual
-                    this.classList.add('selected');
-                    
-                    // Salva resposta
-                    answers[questionNum] = {
-                        value: this.dataset.value,
-                        correct: this.dataset.correct === 'true'
-                    };
-                    
-                    // Habilita botão próximo
-                    document.getElementById('nextBtn').disabled = false;
+            const marker = L.marker([fazenda.lat, fazenda.lng], { icon: icon })
+                .addTo(map)
+                .bindPopup(popupContent, {
+                    className: 'custom-popup',
+                    maxWidth: 400
                 });
+
+            marker.on('click', () => {
+                highlightFarm(fazenda.id);
+            });
+
+            markers[fazenda.id] = marker;
+        }
+
+        function createFarmsList() {
+            const listContainer = document.getElementById('farmsList');
+            listContainer.innerHTML = '';
+
+            const filteredFazendas = currentFilter === 'all' 
+                ? fazendas 
+                : fazendas.filter(f => f.tipo === currentFilter);
+
+            filteredFazendas.forEach(fazenda => {
+                const card = document.createElement('div');
+                card.className = 'farm-card';
+                card.dataset.id = fazenda.id;
+                card.onclick = () => focusOnFarm(fazenda);
+
+                card.innerHTML = `
+                    <div class="farm-header">
+                        <div>
+                            <div class="farm-name">${fazenda.nome}</div>
+                            <div class="farm-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                ${fazenda.cidade}, ${fazenda.estado}
+                            </div>
+                        </div>
+                        <span class="farm-state">${fazenda.estado}</span>
+                    </div>
+                    <div class="farm-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">Área</div>
+                            <div class="stat-value">${fazenda.area}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Produção</div>
+                            <div class="stat-value">${fazenda.producao.split(' ')[0]}</div>
+                        </div>
+                    </div>
+                    <div class="farm-products">
+                        ${fazenda.produtos.map(p => `<span class="product-tag">${p}</span>`).join('')}
+                    </div>
+                `;
+
+                listContainer.appendChild(card);
             });
         }
 
-        function nextQuestion() {
-            if (currentQuestion < totalQuestions) {
-                // Esconde questão atual
-                document.querySelector(`.quiz-question[data-question="${currentQuestion}"]`).classList.remove('active');
-                
-                // Atualiza progresso
-                document.querySelector(`.progress-dot:nth-child(${currentQuestion})`).classList.add('completed');
-                document.querySelector(`.progress-dot:nth-child(${currentQuestion})`).classList.remove('active');
-                
-                currentQuestion++;
-                
-                // Mostra próxima questão
-                document.querySelector(`.quiz-question[data-question="${currentQuestion}"]`).classList.add('active');
-                document.querySelector(`.progress-dot:nth-child(${currentQuestion})`).classList.add('active');
-                
-                // Atualiza botões
-                document.getElementById('prevBtn').disabled = false;
-                
-                if (currentQuestion === totalQuestions) {
-                    document.getElementById('nextBtn').style.display = 'none';
-                    document.getElementById('finishBtn').style.display = 'flex';
-                }
-                
-                // Reseta botão próximo se já tiver resposta
-                const currentAnswer = answers[currentQuestion];
-                document.getElementById('nextBtn').disabled = !currentAnswer;
-            }
+        function focusOnFarm(fazenda) {
+            map.setView([fazenda.lat, fazenda.lng], 10);
+            markers[fazenda.id].openPopup();
+            highlightFarm(fazenda.id);
         }
 
-        function prevQuestion() {
-            if (currentQuestion > 1) {
-                // Esconde questão atual
-                document.querySelector(`.quiz-question[data-question="${currentQuestion}"]`).classList.remove('active');
-                document.querySelector(`.progress-dot:nth-child(${currentQuestion})`).classList.remove('active');
-                
-                currentQuestion--;
-                
-                // Mostra questão anterior
-                document.querySelector(`.quiz-question[data-question="${currentQuestion}"]`).classList.add('active');
-                document.querySelector(`.progress-dot:nth-child(${currentQuestion})`).classList.add('active');
-                
-                // Atualiza botões
-                if (currentQuestion === 1) {
-                    document.getElementById('prevBtn').disabled = true;
+        function highlightFarm(id) {
+            document.querySelectorAll('.farm-card').forEach(card => {
+                card.classList.remove('active');
+                if (parseInt(card.dataset.id) === id) {
+                    card.classList.add('active');
+                    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 }
-                
-                if (currentQuestion < totalQuestions) {
-                    document.getElementById('nextBtn').style.display = 'flex';
-                    document.getElementById('finishBtn').style.display = 'none';
+            });
+        }
+
+        function filterByType(type) {
+            currentFilter = type;
+            
+            // Atualizar botões
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.filter === type) {
+                    btn.classList.add('active');
                 }
-                
-                // Restaura seleção se existir
-                const currentAnswer = answers[currentQuestion];
-                if (currentAnswer) {
-                    const options = document.querySelector(`.quiz-question[data-question="${currentQuestion}"]`).querySelectorAll('.quiz-option');
-                    options.forEach(opt => {
-                        if (opt.dataset.value === currentAnswer.value) {
-                            opt.classList.add('selected');
-                        }
-                    });
-                    document.getElementById('nextBtn').disabled = false;
+            });
+
+            // Mostrar/esconder marcadores
+            fazendas.forEach(fazenda => {
+                if (type === 'all' || fazenda.tipo === type) {
+                    map.addLayer(markers[fazenda.id]);
                 } else {
-                    document.getElementById('nextBtn').disabled = true;
-                }
-            }
-        }
-
-        function finishQuiz() {
-            // Calcula pontuação
-            score = 0;
-            Object.values(answers).forEach(answer => {
-                if (answer.correct) score++;
-            });
-            
-            // Mostra resultado
-            document.querySelector('.quiz-navigation').style.display = 'none';
-            document.querySelector('.quiz-progress').style.display = 'none';
-            document.querySelector(`.quiz-question[data-question="${currentQuestion}"]`).style.display = 'none';
-            
-            const resultDiv = document.getElementById('quizResult');
-            const resultIcon = document.getElementById('resultIcon');
-            const resultTitle = document.getElementById('resultTitle');
-            const resultScore = document.getElementById('resultScore');
-            const resultMessage = document.getElementById('resultMessage');
-            
-            resultDiv.classList.add('show');
-            resultScore.textContent = `${score}/${totalQuestions}`;
-            
-            if (score === 5) {
-                resultIcon.textContent = '🏆';
-                resultTitle.textContent = 'Excelente!';
-                resultMessage.textContent = 'Parabéns! Você demonstrou excelente conhecimento sobre sustentabilidade no agronegócio. Continue assim!';
-                resultTitle.style.color = '#4CAF50';
-            } else if (score >= 3) {
-                resultIcon.textContent = '👏';
-                resultTitle.textContent = 'Muito Bom!';
-                resultMessage.textContent = 'Você tem um bom conhecimento sobre o tema. Que tal explorar mais nossas seções de tecnologias?';
-                resultTitle.style.color = '#2E7D5C';
-            } else {
-                resultIcon.textContent = '📚';
-                resultTitle.textContent = 'Continue Aprendendo';
-                resultMessage.textContent = 'Que tal explorar nosso conteúdo sobre tecnologias sustentáveis e voltar a fazer o quiz?';
-                resultTitle.style.color = '#1A4A7A';
-            }
-            
-            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-
-        function restartQuiz() {
-            currentQuestion = 1;
-            answers = {};
-            score = 0;
-            
-            // Reset UI
-            document.querySelectorAll('.quiz-question').forEach((q, index) => {
-                q.classList.remove('active');
-                if (index === 0) q.classList.add('active');
-                q.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected', 'correct', 'incorrect'));
-            });
-            
-            document.querySelectorAll('.progress-dot').forEach((dot, index) => {
-                dot.classList.remove('active', 'completed');
-                if (index === 0) dot.classList.add('active');
-            });
-            
-            document.querySelector('.quiz-navigation').style.display = 'flex';
-            document.querySelector('.quiz-progress').style.display = 'flex';
-            document.getElementById('quizResult').classList.remove('show');
-            document.getElementById('prevBtn').disabled = true;
-            document.getElementById('nextBtn').disabled = true;
-            document.getElementById('nextBtn').style.display = 'flex';
-            document.getElementById('finishBtn').style.display = 'none';
-            
-            window.scrollTo({ top: document.getElementById('quiz').offsetTop - 100, behavior: 'smooth' });
-        }
-
-        // Inicializa quiz
-        initQuiz();
-
-        // Envio de formulário
-        function enviarFormulario(event) {
-            event.preventDefault();
-            const nome = document.getElementById('nome').value;
-            alert(`Obrigado pelo contato, ${nome}! Respondemos em breve.`);
-            event.target.reset();
-        }
-
-        // Animação dos números
-        function animateValue(element, start, end, duration) {
-            let startTimestamp = null;
-            const step = (timestamp) => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                const value = Math.floor(progress * (end - start) + start);
-                element.textContent = value + (element.dataset.suffix || '');
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                }
-            };
-            window.requestAnimationFrame(step);
-        }
-
-        // Observer para animar elementos quando visíveis
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animate');
-                    observer.unobserve(entry.target);
+                    map.removeLayer(markers[fazenda.id]);
                 }
             });
-        }, observerOptions);
 
-        // Observar elementos
-        document.querySelectorAll('.data-card, .tech-card, .chart-container').forEach(el => {
-            observer.observe(el);
-        });
+            // Atualizar lista
+            createFarmsList();
+        }
 
-        // Menu mobile
-        const mobileMenu = document.querySelector('.mobile-menu');
-        const navLinks = document.querySelector('.nav-links');
-
-        mobileMenu.addEventListener('click', () => {
-            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
-            navLinks.style.position = 'absolute';
-            navLinks.style.top = '100%';
-            navLinks.style.left = '0';
-            navLinks.style.right = '0';
-            navLinks.style.background = 'var(--branco)';
-            navLinks.style.flexDirection = 'column';
-            navLinks.style.padding = '2rem';
-            navLinks.style.boxShadow = '0 10px 20px var(--sombra)';
-        });
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    const headerOffset = 80;
-                    const elementPosition = target.getBoundingClientRect().top;
-                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-                    window.scrollTo({
-                        top: offsetPosition,
-                        behavior: 'smooth'
-                    });
-                    
-                    // Fechar menu mobile se aberto
-                    if (window.innerWidth <= 968) {
-                        navLinks.style.display = 'none';
-                    }
-                }
+        // Event listeners para filtros
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterByType(btn.dataset.filter);
             });
         });
 
-        // Header scroll effect
-        let lastScroll = 0;
-        const header = document.querySelector('header');
-
-        window.addEventListener('scroll', () => {
-            const currentScroll = window.pageYOffset;
-            
-            if (currentScroll > 100) {
-                header.style.boxShadow = '0 4px 20px var(--sombra)';
-            } else {
-                header.style.boxShadow = '0 2px 20px var(--sombra)';
-            }
-            
-            lastScroll = currentScroll;
-        });
-
-        // Animação inicial dos números do hero
-        window.addEventListener('load', () => {
-            const statNumbers = document.querySelectorAll('.stat-number');
-            statNumbers.forEach(stat => {
-                const text = stat.textContent;
-                const number = parseFloat(text);
-                if (!isNaN(number)) {
-                    const suffix = text.replace(/[0-9.]/g, '');
-                    stat.dataset.suffix = suffix;
-                    animateValue(stat, 0, number, 2000);
-                }
-            });
-        });
+        // Inicializar quando a página carregar
+        document.addEventListener('DOMContentLoaded', initMap);
     </script>
 </body>
 </html>
